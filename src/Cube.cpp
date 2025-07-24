@@ -8,33 +8,23 @@ Cube::Cube() {
 
 void Cube::initailizeCube() {
     for (int side = 0; side < NUM_OF_SIDES; side++) {
-        std::cout << side << std::endl;
         switch (static_cast<Colors> (side)) {
             case yellow:
-                std::cout << "Up is: " << colorsToString(static_cast<Colors> (side)) << std::endl;
-                std::cout << &up << std::endl;
                 up = &sides[side];
-                std::cout << &sides[side] << std::endl;
-                std::cout << &up << std::endl;
                 break;
             case white:
-                std::cout << "Down is: " << colorsToString(static_cast<Colors> (side)) << std::endl;
                 down = &sides[side];
                 break;
             case blue:
-                std::cout << "Left is: " << colorsToString(static_cast<Colors> (side)) << std::endl;
                 left = &sides[side];
                 break;
             case red:
-                std::cout << "Front is: " << colorsToString(static_cast<Colors> (side)) << std::endl;
                 front = &sides[side];
                 break;
             case green:
-                std::cout << "Right is: " << colorsToString(static_cast<Colors> (side)) << std::endl;
                 right = &sides[side];
                 break;
             case orange:
-                std::cout << "Back is: " << colorsToString(static_cast<Colors> (side)) << std::endl;
                 back = &sides[side];
                 break;
         }
@@ -45,8 +35,51 @@ void Cube::initailizeCube() {
 }
 
 void Cube::printCube() {
+    const int num_of_body_sides = 4;
+    const int row_of_squares = static_cast<int>(sqrt(NUM_OF_SQUARES));
+    const int col_of_squares = static_cast<int>(sqrt(NUM_OF_SQUARES));
     std::cout << '\n';
     up->printSide();
+
+    std::cout << "┌───┬───┬───┐ ┌───┬───┬───┐ ┌───┬───┬───┐ ┌───┬───┬───┐" << '\n';
+    for (int i = 0; i < col_of_squares; i++) {
+        for (int j = 0; j < row_of_squares * num_of_body_sides; j++) {
+            std::cout << "│ ";
+
+            switch (cube_side_order[(j / row_of_squares) + 1]->getSquare(j % row_of_squares)) {
+                case yellow:
+                    std::cout << "\033[93m";
+                    break;
+                case white:
+                    std::cout << "\033[97m";
+                    break;
+                case blue:
+                    std::cout << "\033[94m";
+                    break;
+                case red:
+                    std::cout << "\033[91m";
+                    break;
+                case green:
+                    std::cout << "\033[92m";
+                    break;
+                case orange:
+                    std::cout << "\033[38;5;208m";
+                    break;
+            }
+            if (j % row_of_squares == 0 && j > 0) {
+                std::cout << "│ ";
+            }
+            std::cout << cube_side_order[(j / row_of_squares) + 1]->getSquare(j % row_of_squares) << "\033[0m" << " ";
+
+        }
+        std::cout << "│";
+        if (i != col_of_squares - 1) {
+            std::cout << "\n├───┼───┼───┤ ├───┼───┼───┤ ├───┼───┼───┤ ├───┼───┼───┤\n";
+        }
+
+    }
+    std::cout << "\n└───┴───┴───┘ └───┴───┴───┘ └───┴───┴───┘ └───┴───┴───┘" << '\n';
+
     down->printSide();
 }
 

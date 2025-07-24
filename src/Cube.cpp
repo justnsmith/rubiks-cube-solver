@@ -7,27 +7,47 @@ Cube::Cube() {
 }
 
 void Cube::initailizeCube() {
-  for (int side = 0; side < NUM_OF_SIDES; side++) {
-    for (int square = 0; square < NUM_OF_SQUARES; square++) {
-        sides[side].getSquare(square) = static_cast<Colors> (side);
+    for (int side = 0; side < NUM_OF_SIDES; side++) {
+        std::cout << side << std::endl;
+        switch (static_cast<Colors> (side)) {
+            case yellow:
+                std::cout << "Up is: " << colorsToString(static_cast<Colors> (side)) << std::endl;
+                std::cout << &up << std::endl;
+                up = &sides[side];
+                std::cout << &sides[side] << std::endl;
+                std::cout << &up << std::endl;
+                break;
+            case white:
+                std::cout << "Down is: " << colorsToString(static_cast<Colors> (side)) << std::endl;
+                down = &sides[side];
+                break;
+            case blue:
+                std::cout << "Left is: " << colorsToString(static_cast<Colors> (side)) << std::endl;
+                left = &sides[side];
+                break;
+            case red:
+                std::cout << "Front is: " << colorsToString(static_cast<Colors> (side)) << std::endl;
+                front = &sides[side];
+                break;
+            case green:
+                std::cout << "Right is: " << colorsToString(static_cast<Colors> (side)) << std::endl;
+                right = &sides[side];
+                break;
+            case orange:
+                std::cout << "Back is: " << colorsToString(static_cast<Colors> (side)) << std::endl;
+                back = &sides[side];
+                break;
+        }
+        for (int square = 0; square < NUM_OF_SQUARES; square++) {
+            sides[side].getSquare(square) = static_cast<Colors> (side);
+        }
     }
-  }
 }
 
 void Cube::printCube() {
     std::cout << '\n';
-    for (int side = 0; side < NUM_OF_SIDES; side++) {
-        for (int square = 0; square < NUM_OF_SQUARES; square++) {
-            std::cout << sides[side].getSquare(square);
-
-            if (square % static_cast<int>(sqrt(NUM_OF_SQUARES)) == static_cast<int>(sqrt(NUM_OF_SQUARES)) - 1) {
-                std::cout << '\n';
-            }
-        }
-        if (side != NUM_OF_SIDES-1) {
-            std::cout << '\n';
-        }
-    }
+    up->printSide();
+    down->printSide();
 }
 
 Cube::Side& Cube::getSide(Colors color) {

@@ -7,6 +7,12 @@
 class Cube : Side {
 private:
     std::array<Side, NUM_OF_SIDES> sides;
+    Side* up {};
+    Side* down {};
+    Side* left {};
+    Side* front {};
+    Side* right {};
+    Side* back {};
 
     void initailizeCube();
 

@@ -10,6 +10,8 @@ private:
 
     void initailizeCube();
 
+    std::string colorsToString(Colors color);
+
    public:
 
    Cube();
@@ -17,6 +19,10 @@ private:
     Side& getSide(Colors color);
 
     void printCube();
+
+    void left_up();
+
+    void swap();
 };
 
 #endif

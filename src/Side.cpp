@@ -34,7 +34,8 @@ void Side::printSide() {
                 std::cout << "\033[38;5;208m";
                 break;
         }
-        std::cout << getSquare(square) << "\033[0m" << " ";
+        std::cout << "■" << "\033[0m" << " ";
+        //std::cout << getSquare(square) << "\033[0m" << " ";
 
         if (square % static_cast<int>(sqrt(NUM_OF_SQUARES)) == static_cast<int>(sqrt(NUM_OF_SQUARES)) - 1) {
             std::cout << "│\n";

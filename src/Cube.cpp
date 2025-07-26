@@ -141,6 +141,45 @@ void Cube::rotateHelper(const std::array<Side*, 4>& relevant_sides) {
     }
 }
 
+void Cube::rotate_side_counterclockwise(Side* side) {
+    std::array<Colors, NUM_OF_SQUARES> newSide = {};
+    const int spacing = 3;
+    int currIndex = 2;
+    int storedIndex = 2;
+
+    for (int i = 0; i < NUM_OF_SQUARES; i++) {
+        if (i > 0 && i % 3 == 0) {
+            storedIndex -= 1;
+            currIndex = storedIndex;
+        }
+        newSide[i] = side->getSquare(currIndex);
+        currIndex += spacing;
+    }
+
+    for (int i = 0; i < NUM_OF_SQUARES; i++) {
+        side->getSquare(i) = newSide[i];
+    }
+}
+
+void Cube::rotate_side_clockwise(Side* side) {
+    std::array<Colors, NUM_OF_SQUARES> newSide = {};
+    const int spacing = 3;
+    int currIndex = 6;
+    int storedIndex = 6;
+    for (int i = 0; i < NUM_OF_SQUARES; i++) {
+        if (i > 0 && i % 3 == 0) {
+            storedIndex += 1;
+            currIndex = storedIndex;
+        }
+        newSide[i] = side->getSquare(currIndex);
+        currIndex -= spacing;
+    }
+
+    for (int i = 0; i < NUM_OF_SQUARES; i++) {
+        side->getSquare(i) = newSide[i];
+    }
+}
+
 void Cube::rotate_up() {
     const std::array<Side*, 4> relevant_sides = {down, front, up, back};
     rotateHelper(relevant_sides);
@@ -152,12 +191,14 @@ void Cube::rotate_down() {
 }
 
 void Cube::rotate_left() {
-    const std::array<Side*, 4> relevant_sides = {front, left, back, right};
+    const std::array<Side*, 4> relevant_sides = {right, back, left, front};
     rotateHelper(relevant_sides);
+    rotate_side_clockwise(down);
+    rotate_side_counterclockwise(up);
 }
 
 void Cube::rotate_right() {
-    const std::array<Side*, 4> relevant_sides = {right, back, left, front};
+    const std::array<Side*, 4> relevant_sides = {front, left, back, right};
     rotateHelper(relevant_sides);
 }
 
@@ -229,4 +270,26 @@ void Cube::bottom_right() {
     const std::array<int, 3> top_side_squares = {6, 7, 8};
 
     makeTurn(relevant_sides, top_side_squares);
+}
+
+void Cube::front_right() {
+    const std::array<Side*, 4> relevant_sides = {up, front, down, back};
+    const std::array<int, 3> left_side_squares = {0, 3, 6};
+
+    rotate_right();
+    makeTurn(relevant_sides, left_side_squares);
+    rotate_left();
+}
+
+void Cube::test() {
+    left_up();
+    right_up();
+    top_left();
+    bottom_right();
+
+    front->printSide();
+    rotate_side_clockwise(front);
+    front->printSide();
+    rotate_side_counterclockwise(front);
+    front->printSide();
 }

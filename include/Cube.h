@@ -19,6 +19,8 @@ private:
     std::string colorsToString(Colors color);
     void makeTurn(const std::array<Side*, 4>& relevant_sides, const std::array<int, 3>& left_side_squares);
     void rotateHelper(const std::array<Side*, 4>& relevant_sides);
+    void rotate_side_counterclockwise(Side* side);
+    void rotate_side_clockwise(Side* side);
 
 public:
 
@@ -43,7 +45,7 @@ public:
     void top_right();
     void bottom_left();
     void bottom_right();
-    //void front_right();
+    void front_right();
     //void front_left();
     //void back_right();
     //void back_left();
@@ -51,6 +53,7 @@ public:
     //void middle_right();
 
     void swap();
+    void test();
 };
 
 #endif

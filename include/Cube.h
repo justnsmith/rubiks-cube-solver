@@ -28,6 +28,11 @@ public:
 
     void printCube();
 
+    void rotate_up();
+    void rotate_down();
+    void rotate_left();
+    void rotate_right();
+
     void left_up();
     void left_down();
     void right_up();

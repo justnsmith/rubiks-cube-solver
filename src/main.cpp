@@ -5,7 +5,7 @@ using namespace std;
 
 int main() {
     Cube cube;
-    cube.bottom_left();
-    cube.bottom_right();
+    cube.printCube();
+    cube.rotate_up();
     cube.printCube();
 }

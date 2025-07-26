@@ -131,6 +131,31 @@ void Cube::makeTurn(const std::array<Side*, 4>& relevant_sides, const std::array
     }
 }
 
+void Cube::rotate_up() {
+    std::array<Side*, 4> relevant_sides = {down, front, up, back};
+    // down front up back
+    // front down up back
+    // up down front back
+    // back down front up
+
+    Side* temp = front;
+    front = down;
+    down = temp;
+
+    temp = up;
+    up = front;
+    front = temp;
+
+    //temp = back;
+    //back = up;
+    //up = temp;
+
+    std::cout << &(*relevant_sides[0]) << std::endl;
+    std::cout << &cube_side_order[5] << std::endl;
+    (*relevant_sides[0]).printSide();
+    (*cube_side_order[5]).printSide();
+}
+
 void Cube::left_up() {
     const std::array<Side*, 4> relevant_sides = {down, front, up, back};
     const std::array<int, 3> left_side_squares = {0, 3, 6};

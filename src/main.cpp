@@ -5,8 +5,6 @@ using namespace std;
 
 int main() {
     Cube cube;
-    cube.left_up();
-    cube.rotate_left();
     cube.printCube();
 }
 

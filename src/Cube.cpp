@@ -119,6 +119,16 @@ void Cube::swap() {
     }
 }
 
+void Cube::inverse_move(Side* side, std::array<int, 3> original_squares, std::array<int, 3> new_squares) {
+    Colors temp {};
+
+    for (int i = 0; i < original_squares.size(); i++) {
+        temp = side->getSquare(original_squares[i]);
+        side->getSquare(original_squares[i]) = side->getSquare(new_squares[i]);
+        side->getSquare(new_squares[i]) = temp;
+    }
+}
+
 void Cube::makeTurn(const std::array<Side*, 4>& relevant_sides, const std::array<int, 3>& square_positions) {
    Colors temp {};
 
@@ -206,28 +216,40 @@ void Cube::left_up() {
     const std::array<Side*, 4> relevant_sides = {down, front, up, back};
     const std::array<int, 3> left_side_squares = {0, 3, 6};
 
+    inverse_move(back, left_side_squares, {8, 5, 2});
     makeTurn(relevant_sides, left_side_squares);
+    inverse_move(back, left_side_squares, {8, 5, 2});
+    rotate_side_counterclockwise(left);
 }
 
 void Cube::left_down() {
     const std::array<Side*, 4> relevant_sides = {back, up, front, down};
     const std::array<int, 3> left_side_squares = {0, 3, 6};
 
+    inverse_move(back, left_side_squares, {8, 5, 2});
     makeTurn(relevant_sides, left_side_squares);
+    inverse_move(back, left_side_squares, {8, 5, 2});
+    rotate_side_clockwise(left);
 }
 
 void Cube::right_up() {
     const std::array<Side*, 4> relevant_sides = {down, front, up, back};
     const std::array<int, 3> right_side_squares = {2, 5, 8};
 
+    inverse_move(back, right_side_squares, {6, 3, 0});
     makeTurn(relevant_sides, right_side_squares);
+    inverse_move(back, right_side_squares, {6, 3, 0});
+    rotate_side_clockwise(right);
 }
 
 void Cube::right_down() {
     const std::array<Side*, 4> relevant_sides = {back, up, front, down};
     const std::array<int, 3> right_side_squares = {2, 5, 8};
 
+    inverse_move(back, right_side_squares, {6, 3, 0});
     makeTurn(relevant_sides, right_side_squares);
+    inverse_move(back, right_side_squares, {6, 3, 0});
+    rotate_side_counterclockwise(right);
 }
 
 void Cube::middle_up() {
@@ -244,11 +266,26 @@ void Cube::middle_down() {
     makeTurn(relevant_sides, middle_side_squares);
 }
 
+void Cube::middle_left() {
+   const std::array<Side*, 4> relevant_sides = {front, left, back, right};
+   const std::array<int, 3> middle_side_squares = {3, 4, 5};
+
+   makeTurn(relevant_sides, middle_side_squares);
+}
+
+void Cube::middle_right() {
+   const std::array<Side*, 4> relevant_sides = {right, back, left, front};
+   const std::array<int, 3> middle_side_squares = {3, 4, 5};
+
+   makeTurn(relevant_sides, middle_side_squares);
+}
+
 void Cube::top_left() {
     const std::array<Side*, 4> relevant_sides = {front, left, back, right};
     const std::array<int, 3> top_side_squares = {0, 1, 2};
 
     makeTurn(relevant_sides, top_side_squares);
+    rotate_side_clockwise(up);
 }
 
 void Cube::top_right() {
@@ -256,6 +293,7 @@ void Cube::top_right() {
     const std::array<int, 3> top_side_squares = {0, 1, 2};
 
     makeTurn(relevant_sides, top_side_squares);
+    rotate_side_counterclockwise(up);
 }
 
 void Cube::bottom_left() {
@@ -263,6 +301,7 @@ void Cube::bottom_left() {
     const std::array<int, 3> top_side_squares = {6, 7, 8};
 
     makeTurn(relevant_sides, top_side_squares);
+    rotate_side_counterclockwise(down);
 }
 
 void Cube::bottom_right() {
@@ -270,6 +309,7 @@ void Cube::bottom_right() {
     const std::array<int, 3> top_side_squares = {6, 7, 8};
 
     makeTurn(relevant_sides, top_side_squares);
+    rotate_side_clockwise(down);
 }
 
 void Cube::front_right() {

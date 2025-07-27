@@ -117,7 +117,7 @@ void Cube::swap() {
     }
 }
 
-void Cube::inverse_move(Side* side, std::array<int, 3> original_squares, std::array<int, 3> new_squares) {
+void Cube::inverse_move(Side* side, const std::array<int, 3>& original_squares, const std::array<int, 3>& new_squares) {
     Colors temp {};
 
     if (original_squares[0] == new_squares[2] && original_squares[2] == new_squares[0]) {
@@ -198,11 +198,15 @@ void Cube::rotate_side_clockwise(Side* side) {
 void Cube::rotate_up() {
     const std::array<Side*, 4> relevant_sides = {down, front, up, back};
     rotateHelper(relevant_sides);
+    rotate_side_clockwise(right);
+    rotate_side_counterclockwise(left);
 }
 
 void Cube::rotate_down() {
     const std::array<Side*, 4> relevant_sides = {back, up, front, down};
     rotateHelper(relevant_sides);
+    rotate_side_clockwise(left);
+    rotate_side_counterclockwise(right);
 }
 
 void Cube::rotate_left() {
@@ -215,6 +219,8 @@ void Cube::rotate_left() {
 void Cube::rotate_right() {
     const std::array<Side*, 4> relevant_sides = {front, left, back, right};
     rotateHelper(relevant_sides);
+    rotate_side_clockwise(up);
+    rotate_side_counterclockwise(down);
 }
 
 void Cube::left_up() {
@@ -322,12 +328,27 @@ void Cube::bottom_right() {
 }
 
 void Cube::front_right() {
-    const std::array<Side*, 4> relevant_sides = {up, front, down, back};
-    const std::array<int, 3> left_side_squares = {0, 3, 6};
-
     rotate_right();
-    makeTurn(relevant_sides, left_side_squares);
+    left_down();
     rotate_left();
+}
+
+void Cube::front_left() {
+    rotate_left();
+    right_down();
+    rotate_right();
+}
+
+void Cube::back_right() {
+    rotate_right();
+    right_down();
+    rotate_left();
+}
+
+void Cube::back_left() {
+    rotate_left();
+    left_down();
+    rotate_right();
 }
 
 void Cube::test() {
@@ -336,13 +357,21 @@ void Cube::test() {
     top_left();
     top_left();
     bottom_right();
+    top_right();
+    left_up();
+    left_up();
+    right_up();
     printCube();
-    middle_up();
+    rotate_left();
     printCube();
-    middle_down();
+    front_right();
     printCube();
-    middle_left();
+    front_left();
     printCube();
-    middle_right();
+    back_right();
+    printCube();
+    back_left();
+    printCube();
+    rotate_up();
     printCube();
 }

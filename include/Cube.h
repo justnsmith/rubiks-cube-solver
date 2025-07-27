@@ -21,7 +21,7 @@ private:
     void rotateHelper(const std::array<Side*, 4>& relevant_sides);
     void rotate_side_counterclockwise(Side* side);
     void rotate_side_clockwise(Side* side);
-    void inverse_move(Side* side, std::array<int, 3> original_squares, std::array<int, 3> new_squares);
+    void inverse_move(Side* side, const std::array<int, 3>& original_squares, const std::array<int, 3>& new_squares);
 
 public:
 
@@ -31,10 +31,10 @@ public:
 
     void printCube();
 
-    void rotate_up();
-    void rotate_down();
-    void rotate_left();
-    void rotate_right();
+    void rotate_up();    // WIP
+    void rotate_down();  // WIP
+    void rotate_left();  // WC
+    void rotate_right(); // WC
 
     void left_up();      // WC
     void left_down();    // WC
@@ -48,10 +48,10 @@ public:
     void top_right();    // WC
     void bottom_left();  // WC
     void bottom_right(); // WC
-    void front_right();
-    //void front_left();
-    //void back_right();
-    //void back_left();
+    void front_right();  // WC
+    void front_left();   // WC
+    void back_right();   // WC
+    void back_left();    // WC
 
     void swap();
     void test();

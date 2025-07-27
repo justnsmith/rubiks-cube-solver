@@ -71,14 +71,12 @@ void Cube::printCube() {
                 std::cout << "│ ";
             }
             std::cout << "■" << "\033[0m" << " ";
-            //std::cout << cube_side_order[(j / row_of_squares) + 1]->getSquare(j % row_of_squares) << "\033[0m" << " ";
-
         }
+
         std::cout << "│";
         if (i != col_of_squares - 1) {
             std::cout << "\n├───┼───┼───┤ ├───┼───┼───┤ ├───┼───┼───┤ ├───┼───┼───┤\n";
         }
-
     }
     std::cout << "\n└───┴───┴───┘ └───┴───┴───┘ └───┴───┴───┘ └───┴───┴───┘" << '\n';
 
@@ -122,10 +120,17 @@ void Cube::swap() {
 void Cube::inverse_move(Side* side, std::array<int, 3> original_squares, std::array<int, 3> new_squares) {
     Colors temp {};
 
-    for (int i = 0; i < original_squares.size(); i++) {
-        temp = side->getSquare(original_squares[i]);
-        side->getSquare(original_squares[i]) = side->getSquare(new_squares[i]);
-        side->getSquare(new_squares[i]) = temp;
+    if (original_squares[0] == new_squares[2] && original_squares[2] == new_squares[0]) {
+        temp = side->getSquare(original_squares[0]);
+        side->getSquare(original_squares[0]) = side->getSquare(original_squares[2]);
+        side->getSquare(original_squares[2]) = temp;
+    }
+    else {
+        for (int i = 0; i < original_squares.size(); i++) {
+            temp = side->getSquare(original_squares[i]);
+            side->getSquare(original_squares[i]) = side->getSquare(new_squares[i]);
+            side->getSquare(new_squares[i]) = temp;
+    }
     }
 }
 
@@ -256,14 +261,18 @@ void Cube::middle_up() {
     const std::array<Side*, 4> relevant_sides = {down, front, up, back};
     const std::array<int, 3> middle_side_squares = {1, 4, 7};
 
+    inverse_move(back, middle_side_squares, {7, 4, 1});
     makeTurn(relevant_sides, middle_side_squares);
+    inverse_move(back, middle_side_squares, {7, 4, 1});
 }
 
 void Cube::middle_down() {
     const std::array<Side*, 4> relevant_sides = {back, up, front, down};
     const std::array<int, 3> middle_side_squares = {1, 4, 7};
 
+    inverse_move(back, middle_side_squares, {7, 4, 1});
     makeTurn(relevant_sides, middle_side_squares);
+    inverse_move(back, middle_side_squares, {7, 4, 1});
 }
 
 void Cube::middle_left() {
@@ -325,11 +334,15 @@ void Cube::test() {
     left_up();
     right_up();
     top_left();
+    top_left();
     bottom_right();
-
-    front->printSide();
-    rotate_side_clockwise(front);
-    front->printSide();
-    rotate_side_counterclockwise(front);
-    front->printSide();
+    printCube();
+    middle_up();
+    printCube();
+    middle_down();
+    printCube();
+    middle_left();
+    printCube();
+    middle_right();
+    printCube();
 }

@@ -36,18 +36,18 @@ public:
     void rotate_left();
     void rotate_right();
 
-    void left_up();
-    void left_down();
-    void right_up();
-    void right_down();
-    void middle_up();
-    void middle_down();
-    void middle_left();
-    void middle_right();
-    void top_left();
-    void top_right();
-    void bottom_left();
-    void bottom_right();
+    void left_up();      // WC
+    void left_down();    // WC
+    void right_up();     // WC
+    void right_down();   // WC
+    void middle_up();    // WC
+    void middle_down();  // WC
+    void middle_left();  // WC
+    void middle_right(); // WC
+    void top_left();     // WC
+    void top_right();    // WC
+    void bottom_left();  // WC
+    void bottom_right(); // WC
     void front_right();
     //void front_left();
     //void back_right();

@@ -5,7 +5,7 @@ using namespace std;
 
 int main() {
     Cube cube;
-    cube.printCube();
+    cube.test();
 }
 
 // 0 1 2

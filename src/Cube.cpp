@@ -38,7 +38,8 @@ void Cube::printCube() {
     const int num_of_body_sides = 4;
     const std::array<Side*, num_of_body_sides> cube_side_order = {left, front, back, right};
     const int row_of_squares = static_cast<int>(sqrt(NUM_OF_SQUARES));
-    const int col_of_squares = static_cast<int>(sqrt(NUM_OF_SQUARES));
+    const int col_of_squares = row_of_squares;
+
     std::cout << '\n';
     up->printSide();
 
@@ -197,14 +198,18 @@ void Cube::rotate_side_clockwise(Side* side) {
 
 void Cube::rotate_up() {
     const std::array<Side*, 4> relevant_sides = {down, front, up, back};
+    inverse_move(back, {6,7,8}, {2,1,0});
     rotateHelper(relevant_sides);
+    inverse_move(back, {6,7,8}, {2,1,0});
     rotate_side_clockwise(right);
     rotate_side_counterclockwise(left);
 }
 
 void Cube::rotate_down() {
     const std::array<Side*, 4> relevant_sides = {back, up, front, down};
+    inverse_move(back, {6,7,8}, {2,1,0});
     rotateHelper(relevant_sides);
+    inverse_move(back, {6,7,8}, {2,1,0});
     rotate_side_clockwise(left);
     rotate_side_counterclockwise(right);
 }
@@ -362,16 +367,8 @@ void Cube::test() {
     left_up();
     right_up();
     printCube();
-    rotate_left();
-    printCube();
-    front_right();
-    printCube();
-    front_left();
-    printCube();
-    back_right();
-    printCube();
-    back_left();
-    printCube();
     rotate_up();
+    printCube();
+    rotate_down();
     printCube();
 }

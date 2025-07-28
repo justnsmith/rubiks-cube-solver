@@ -3,6 +3,8 @@
 
 #include <Side.h>
 #define NUM_OF_SIDES 6
+#define NUM_OF_BODY_SIDES 4
+#define SIDE_LENGTH 3
 
 class Cube : Side {
 private:
@@ -15,46 +17,39 @@ private:
     Side* down {};
 
     void initailizeCube();
-
     std::string colorsToString(Colors color);
-    void makeTurn(const std::array<Side*, 4>& relevant_sides, const std::array<int, 3>& left_side_squares);
-    void rotateHelper(const std::array<Side*, 4>& relevant_sides);
+    void makeTurn(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides, const std::array<int, SIDE_LENGTH>& left_side_squares);
+    void rotateHelper(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides);
     void rotate_side_counterclockwise(Side* side);
     void rotate_side_clockwise(Side* side);
-    void inverse_move(Side* side, const std::array<int, 3>& original_squares, const std::array<int, 3>& new_squares);
+    void inverse_move(Side* side, const std::array<int, SIDE_LENGTH>& original_squares, const std::array<int, SIDE_LENGTH>& new_squares);
 
 public:
-
-   Cube();
+    Cube();
 
     Side& getSide(Colors color);
-
     void printCube();
+    void rotate_up();
+    void rotate_down();
+    void rotate_left();
+    void rotate_right();
 
-    void rotate_up();    // WIP
-    void rotate_down();  // WIP
-    void rotate_left();  // WC
-    void rotate_right(); // WC
-
-    void left_up();      // WC
-    void left_down();    // WC
-    void right_up();     // WC
-    void right_down();   // WC
-    void middle_up();    // WC
-    void middle_down();  // WC
-    void middle_left();  // WC
-    void middle_right(); // WC
-    void top_left();     // WC
-    void top_right();    // WC
-    void bottom_left();  // WC
-    void bottom_right(); // WC
-    void front_right();  // WC
-    void front_left();   // WC
-    void back_right();   // WC
-    void back_left();    // WC
-
-    void swap();
-    void test();
+    void left_up();
+    void left_down();
+    void right_up();
+    void right_down();
+    void middle_up();
+    void middle_down();
+    void middle_left();
+    void middle_right();
+    void top_left();
+    void top_right();
+    void bottom_left();
+    void bottom_right();
+    void front_right();
+    void front_left();
+    void back_right();
+    void back_left();
 };
 
 #endif

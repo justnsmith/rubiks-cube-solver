@@ -5,8 +5,7 @@
 #define NUM_OF_SQUARES 9
 
 class Side {
-
-protected:
+public:
     enum Colors {
         yellow,
         white,

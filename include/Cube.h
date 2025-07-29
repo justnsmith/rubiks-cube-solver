@@ -2,6 +2,7 @@
 #define CUBE_H
 
 #include <Side.h>
+#include <unordered_map>
 #define NUM_OF_SIDES 6
 #define NUM_OF_BODY_SIDES 4
 #define SIDE_LENGTH 3
@@ -9,6 +10,7 @@
 class Cube : Side {
 private:
     std::array<Side, NUM_OF_SIDES> sides {};
+    std::unordered_map<Colors, Side*> color_to_side {};
     Side* up {};
     Side* left {};
     Side* front {};
@@ -23,6 +25,7 @@ private:
     void rotate_side_counterclockwise(Side* side);
     void rotate_side_clockwise(Side* side);
     void inverse_move(Side* side, const std::array<int, SIDE_LENGTH>& original_squares, const std::array<int, SIDE_LENGTH>& new_squares);
+    void changeSideColor(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides);
 
 public:
     Cube();
@@ -50,6 +53,9 @@ public:
     void front_left();
     void back_right();
     void back_left();
+
+    void scramble();
+    void makeMoves();
 };
 
 #endif

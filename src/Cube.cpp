@@ -7,9 +7,10 @@ Cube::Cube() {
 
 void Cube::initailizeCube() {
     for (int side = 0; side < NUM_OF_SIDES; side++) {
-        switch (static_cast<Colors> (side)) {
+        Colors current_side = static_cast<Colors> (side);
+        switch (current_side) {
             case yellow:
-                up = &sides[side];
+                up = &sides[current_side];
                 break;
             case white:
                 down = &sides[side];
@@ -27,8 +28,9 @@ void Cube::initailizeCube() {
                 back = &sides[side];
                 break;
         }
+        color_to_side[current_side] = &sides[side];
         for (int square = 0; square < NUM_OF_SQUARES; square++) {
-            sides[side].getSquare(square) = static_cast<Colors> (side);
+            sides[side].getSquare(square) = current_side;
         }
     }
 }
@@ -83,7 +85,7 @@ void Cube::printCube() {
 }
 
 Cube::Side& Cube::getSide(Colors color) {
-    return sides[color];
+    return *(color_to_side[color]);
 }
 
 std::string Cube::colorsToString(Colors color) {
@@ -262,6 +264,7 @@ void Cube::middle_up() {
     inverse_move(back, middle_side_squares, {7, 4, 1});
     makeTurn(relevant_sides, middle_side_squares);
     inverse_move(back, middle_side_squares, {7, 4, 1});
+    changeSideColor(relevant_sides);
 }
 
 void Cube::middle_down() {
@@ -271,6 +274,7 @@ void Cube::middle_down() {
     inverse_move(back, middle_side_squares, {7, 4, 1});
     makeTurn(relevant_sides, middle_side_squares);
     inverse_move(back, middle_side_squares, {7, 4, 1});
+    changeSideColor(relevant_sides);
 }
 
 void Cube::middle_left() {
@@ -278,6 +282,7 @@ void Cube::middle_left() {
    const std::array<int, SIDE_LENGTH> middle_side_squares = {3, 4, 5};
 
    makeTurn(relevant_sides, middle_side_squares);
+   changeSideColor(relevant_sides);
 }
 
 void Cube::middle_right() {
@@ -285,6 +290,7 @@ void Cube::middle_right() {
    const std::array<int, SIDE_LENGTH> middle_side_squares = {3, 4, 5};
 
    makeTurn(relevant_sides, middle_side_squares);
+   changeSideColor(relevant_sides);
 }
 
 void Cube::top_left() {
@@ -341,4 +347,85 @@ void Cube::back_left() {
     rotate_left();
     left_down();
     rotate_right();
+}
+
+void Cube::scramble() {
+    srand(static_cast<unsigned int>(time(0)));
+    for (int i = 0; i < 25; i++) {
+        int randomMove = (rand() % 16) + 1;
+        switch (randomMove) {
+            case 1:
+                left_up();
+                std::cout << "LU ";
+                break;
+            case 2:
+                left_down();
+                std::cout << "LD ";
+                break;
+            case 3:
+                right_up();
+                std::cout << "RU ";
+                break;
+            case 4:
+                right_down();
+                std::cout << "RD ";
+                break;
+            case 5:
+                middle_up();
+                std::cout << "MU ";
+                break;
+            case 6:
+                middle_down();
+                std::cout << "MD ";
+                break;
+            case 7:
+                middle_left();
+                std::cout << "ML ";
+                break;
+            case 8:
+                middle_right();
+                std::cout << "MR ";
+                break;
+            case 9:
+                top_left();
+                std::cout << "TL ";
+                break;
+            case 10:
+                top_right();
+                std::cout << "TR ";
+                break;
+            case 11:
+                bottom_left();
+                std::cout << "BOL ";
+                break;
+            case 12:
+                bottom_right();
+                std::cout << "BOR ";
+                break;
+            case 13:
+                front_right();
+                std::cout << "FR ";
+                break;
+            case 14:
+                front_left();
+                std::cout << "FL ";
+                break;
+            case 15:
+                back_right();
+                std::cout << "BAR ";
+                break;
+            case 16:
+                back_left();
+                std::cout << "BAL ";
+                break;
+        }
+        printCube();
+    }
+    std::cout << '\n';
+}
+
+void Cube::changeSideColor(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides) {
+    for (int i = 0; i < NUM_OF_BODY_SIDES; i++) {
+        color_to_side[relevant_sides[i]->getSquare(4)] = relevant_sides[i];
+    }
 }

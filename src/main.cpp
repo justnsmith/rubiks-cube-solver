@@ -5,8 +5,8 @@ using namespace std;
 
 int main() {
     Cube cube;
+    cube.scramble();
     cube.printCube();
-    cube.middle_up();
+    cube.solve();
     cube.printCube();
-    cube.getSide(static_cast<Side::Colors>(Side::white)).printSide();
 }

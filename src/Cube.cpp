@@ -88,7 +88,7 @@ Cube::Side& Cube::getSide(Colors color) {
     return *(color_to_side[color]);
 }
 
-std::string Cube::colorsToString(Colors color) {
+const std::string Cube::colorsToString(Colors color) {
     switch (color) {
         case Colors::yellow: return "yellow";
         case Colors::white: return "white";
@@ -187,6 +187,7 @@ void Cube::rotate_up() {
     inverse_move(back, {3,4,5}, {5,4,3});
     rotate_side_clockwise(right);
     rotate_side_counterclockwise(left);
+    changeSideColor(relevant_sides);
 }
 
 void Cube::rotate_down() {
@@ -199,22 +200,25 @@ void Cube::rotate_down() {
     inverse_move(back, {3,4,5}, {5,4,3});
     rotate_side_clockwise(left);
     rotate_side_counterclockwise(right);
+    changeSideColor(relevant_sides);
 }
 
 void Cube::rotate_left() {
-    const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {right, back, left, front};
-
-    rotateHelper(relevant_sides);
-    rotate_side_clockwise(down);
-    rotate_side_counterclockwise(up);
-}
-
-void Cube::rotate_right() {
     const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {front, left, back, right};
 
     rotateHelper(relevant_sides);
     rotate_side_clockwise(up);
     rotate_side_counterclockwise(down);
+    changeSideColor(relevant_sides);
+}
+
+void Cube::rotate_right() {
+    const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {right, back, left, front};
+
+    rotateHelper(relevant_sides);
+    rotate_side_clockwise(down);
+    rotate_side_counterclockwise(up);
+    changeSideColor(relevant_sides);
 }
 
 void Cube::left_up() {
@@ -326,27 +330,27 @@ void Cube::bottom_right() {
 }
 
 void Cube::front_right() {
-    rotate_right();
-    left_down();
     rotate_left();
+    left_down();
+    rotate_right();
 }
 
 void Cube::front_left() {
-    rotate_left();
-    right_down();
     rotate_right();
+    right_down();
+    rotate_left();
 }
 
 void Cube::back_right() {
-    rotate_right();
-    right_down();
     rotate_left();
+    right_down();
+    rotate_right();
 }
 
 void Cube::back_left() {
-    rotate_left();
-    left_down();
     rotate_right();
+    left_down();
+    rotate_left();
 }
 
 void Cube::scramble() {
@@ -419,7 +423,6 @@ void Cube::scramble() {
                 std::cout << "BAL ";
                 break;
         }
-        printCube();
     }
     std::cout << '\n';
 }
@@ -428,4 +431,122 @@ void Cube::changeSideColor(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_
     for (int i = 0; i < NUM_OF_BODY_SIDES; i++) {
         color_to_side[relevant_sides[i]->getSquare(4)] = relevant_sides[i];
     }
+}
+
+const std::string Cube::sideToPosition(Side* side) {
+    if (side == up) return "up";
+    if (side == down) return "down";
+    if (side == left) return "left";
+    if (side == right) return "right";
+    if (side == front) return "front";
+    if (side == back) return "back";
+    return "unknown";
+}
+
+void Cube::whiteCross() {
+    std::string curr_yellow_side = sideToPosition(&(getSide(static_cast<Side::Colors>(yellow))));
+    const std::array<int, 4> relevant_squares {1,3,5,7};
+    int curr_amount {};
+
+    if (curr_yellow_side == "left") {
+        rotate_right();
+        rotate_up();
+    }
+    else if (curr_yellow_side == "front") {
+        rotate_up();
+    }
+    else if (curr_yellow_side == "back") {
+        rotate_down();
+    }
+    else if (curr_yellow_side == "right") {
+        rotate_left();
+        rotate_up();
+    }
+    else if (curr_yellow_side == "down") {
+        rotate_up();
+        rotate_up();
+    }
+
+    for (int i = 0; i < relevant_squares.size(); i++) {
+        if (white == getSide(yellow).getSquare(relevant_squares[i])) {
+            curr_amount++;
+        }
+    }
+
+    printCube();
+
+    for (int i = 1; i < NUM_OF_SIDES; i++) {
+        for (int j = 0; j < relevant_squares.size(); j++) {
+            if (curr_amount == 4) {
+                break;
+            }
+
+            if (color_to_side[static_cast<Colors> (i)] == &getSide(white)) {
+                if (white == getSide(white).getSquare(relevant_squares[j])) {
+                    if (relevant_squares[j] == 1) {
+                        while (white == getSide(yellow).getSquare(7)) {
+                            top_left();
+                        }
+                        front_left();
+                        front_left();
+                    }
+                    else if (relevant_squares[j] == 3) {
+                        while (white == getSide(yellow).getSquare(3)) {
+                            top_left();
+                        }
+                        left_up();
+                        left_up();
+                    }
+                    else if (relevant_squares[j] == 5) {
+                        while (white == getSide(yellow).getSquare(5)) {
+                            top_left();
+                        }
+                        right_up();
+                        right_up();
+                    }
+                    else {
+                        while (white == getSide(yellow).getSquare(1)) {
+                            top_left();
+                        }
+                        back_left();
+                        back_left();
+                    }
+                    curr_amount++;
+                }
+            }
+            else if (color_to_side[static_cast<Colors> (i)] == front) {
+                if (white == front->getSquare(relevant_squares[j])) {
+                    if (relevant_squares[j] == 1) {
+                        while (white == getSide(yellow).getSquare(7)) {
+                            if (left->getSquare(5) != white) {
+                                front_left();
+                                while (getSide(yellow).getSquare(3) == white) {
+                                    top_left();
+                                }
+                                left_up();
+                                curr_amount++;
+                            }
+                            else if (right->getSquare(3) != white) {
+                                front_right();
+                                while (getSide(yellow).getSquare(3) == white) {
+                                    top_left();
+                                }
+                                right_up();
+                                curr_amount++;
+                            }
+                            else {
+                                while (getSide(yellow).getSquare(3) == white) {
+                                    top_left();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Cube::solve() {
+    whiteCross();
 }

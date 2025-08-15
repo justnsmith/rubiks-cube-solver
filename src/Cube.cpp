@@ -443,107 +443,23 @@ const std::string Cube::sideToPosition(Side* side) {
     return "unknown";
 }
 
-void Cube::whiteCross() {
-    std::string curr_yellow_side = sideToPosition(&(getSide(static_cast<Side::Colors>(yellow))));
-    const std::array<int, 4> relevant_squares {1,3,5,7};
-    int curr_amount {};
-
-    if (curr_yellow_side == "left") {
-        rotate_right();
-        rotate_up();
-    }
-    else if (curr_yellow_side == "front") {
-        rotate_up();
-    }
-    else if (curr_yellow_side == "back") {
-        rotate_down();
-    }
-    else if (curr_yellow_side == "right") {
-        rotate_left();
-        rotate_up();
-    }
-    else if (curr_yellow_side == "down") {
-        rotate_up();
-        rotate_up();
-    }
-
-    for (int i = 0; i < relevant_squares.size(); i++) {
-        if (white == getSide(yellow).getSquare(relevant_squares[i])) {
-            curr_amount++;
-        }
-    }
-
-    printCube();
-
-    for (int i = 1; i < NUM_OF_SIDES; i++) {
+std::vector<Cube::PieceLocation> Cube::find_white_edges() {
+    const std::array<int, 4> relevant_squares = {1,3,5,7};
+    std::vector<PieceLocation> white_edge_locations {};
+    for (int i = 0; i < NUM_OF_SIDES; i++) {
         for (int j = 0; j < relevant_squares.size(); j++) {
-            if (curr_amount == 4) {
-                break;
-            }
-
-            if (color_to_side[static_cast<Colors> (i)] == &getSide(white)) {
-                if (white == getSide(white).getSquare(relevant_squares[j])) {
-                    if (relevant_squares[j] == 1) {
-                        while (white == getSide(yellow).getSquare(7)) {
-                            top_left();
-                        }
-                        front_left();
-                        front_left();
-                    }
-                    else if (relevant_squares[j] == 3) {
-                        while (white == getSide(yellow).getSquare(3)) {
-                            top_left();
-                        }
-                        left_up();
-                        left_up();
-                    }
-                    else if (relevant_squares[j] == 5) {
-                        while (white == getSide(yellow).getSquare(5)) {
-                            top_left();
-                        }
-                        right_up();
-                        right_up();
-                    }
-                    else {
-                        while (white == getSide(yellow).getSquare(1)) {
-                            top_left();
-                        }
-                        back_left();
-                        back_left();
-                    }
-                    curr_amount++;
-                }
-            }
-            else if (color_to_side[static_cast<Colors> (i)] == front) {
-                if (white == front->getSquare(relevant_squares[j])) {
-                    if (relevant_squares[j] == 1) {
-                        while (white == getSide(yellow).getSquare(7)) {
-                            if (left->getSquare(5) != white) {
-                                front_left();
-                                while (getSide(yellow).getSquare(3) == white) {
-                                    top_left();
-                                }
-                                left_up();
-                                curr_amount++;
-                            }
-                            else if (right->getSquare(3) != white) {
-                                front_right();
-                                while (getSide(yellow).getSquare(3) == white) {
-                                    top_left();
-                                }
-                                right_up();
-                                curr_amount++;
-                            }
-                            else {
-                                while (getSide(yellow).getSquare(3) == white) {
-                                    top_left();
-                                }
-                            }
-                        }
-                    }
-                }
+            if (color_to_side[static_cast<Colors> (i)]->getSquare(relevant_squares[j]) == white) {
+                white_edge_locations.push_back({i, relevant_squares[j]});
             }
         }
+    }
+    return white_edge_locations;
+}
+
+void Cube::whiteCross() {
+    std::vector<PieceLocation> white_edge_locations = find_white_edges();
+    for (int i = 0; i < white_edge_locations.size(); i++) {
+        std::cout << colorsToString(static_cast<Colors>(white_edge_locations[i].face)) << " " << white_edge_locations[i].index << std::endl;
     }
 }
 

@@ -3,6 +3,7 @@
 
 #include <Side.h>
 #include <unordered_map>
+#include <vector>
 #define NUM_OF_SIDES 6
 #define NUM_OF_BODY_SIDES 4
 #define SIDE_LENGTH 3
@@ -18,6 +19,11 @@ private:
     Side* right {};
     Side* down {};
 
+    struct PieceLocation {
+        int face{};
+        int index{};
+    };
+
     void initailizeCube();
     const std::string colorsToString(Colors color);
     const std::string sideToPosition(Side* Side);
@@ -28,6 +34,7 @@ private:
     void inverse_move(Side* side, const std::array<int, SIDE_LENGTH>& original_squares, const std::array<int, SIDE_LENGTH>& new_squares);
     void changeSideColor(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides);
     void whiteCross();
+    std::vector<PieceLocation> find_white_edges();
 
 public:
     Cube();

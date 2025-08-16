@@ -9,4 +9,5 @@ int main() {
     cube.scramble();
     cube.printCube();
     cube.solve();
+    cube.printCube();
 }

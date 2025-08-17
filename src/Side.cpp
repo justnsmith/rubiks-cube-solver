@@ -1,7 +1,7 @@
 #include <Side.h>
 #include <iostream>
 
-Side::Colors& Side::getSquare(int index) {
+Side::Colors& Side::getSquare(SquarePosition index) {
     return squares[index];
 }
 
@@ -14,23 +14,23 @@ void Side::printSide() {
         else {
             std::cout << "│ ";
         }
-        switch (getSquare(square)) {
-            case yellow:
+        switch (getSquare(static_cast<SquarePosition> (square))) {
+            case Yellow:
                 std::cout << "\033[93m";
                 break;
-            case white:
+            case White:
                 std::cout << "\033[97m";
                 break;
-            case blue:
+            case Blue:
                 std::cout << "\033[94m";
                 break;
-            case red:
+            case Red:
                 std::cout << "\033[91m";
                 break;
-            case green:
+            case Green:
                 std::cout << "\033[92m";
                 break;
-            case orange:
+            case Orange:
                 std::cout << "\033[38;5;208m";
                 break;
         }

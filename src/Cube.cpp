@@ -9,28 +9,28 @@ void Cube::initailizeCube() {
     for (int side = 0; side < NUM_OF_SIDES; side++) {
         Colors current_side = static_cast<Colors> (side);
         switch (current_side) {
-            case yellow:
+            case Yellow:
                 up = &sides[current_side];
                 break;
-            case white:
+            case White:
                 down = &sides[side];
                 break;
-            case blue:
+            case Blue:
                 left = &sides[side];
                 break;
-            case red:
+            case Red:
                 front = &sides[side];
                 break;
-            case green:
+            case Green:
                 right = &sides[side];
                 break;
-            case orange:
+            case Orange:
                 back = &sides[side];
                 break;
         }
         color_to_side[current_side] = &sides[side];
-        for (int square = 0; square < NUM_OF_SQUARES; square++) {
-            sides[side].getSquare(square) = current_side;
+        for (int square = TopLeftCorner; square < NUM_OF_SQUARES; square++) {
+            sides[side].getSquare(static_cast<SquarePosition> (square)) = current_side;
         }
     }
 }
@@ -48,23 +48,23 @@ void Cube::printCube() {
         for (int j = 0; j < row_of_squares * NUM_OF_BODY_SIDES; j++) {
             std::cout << "│ ";
 
-            switch (cube_side_order[(j / row_of_squares)]->getSquare((j % row_of_squares) + (i * SIDE_LENGTH))) {
-                case yellow:
+            switch (cube_side_order[(j / row_of_squares)]->getSquare(static_cast<SquarePosition>((j % row_of_squares) + (i * SIDE_LENGTH)))) {
+                case Yellow:
                     std::cout << "\033[93m";
                     break;
-                case white:
+                case White:
                     std::cout << "\033[97m";
                     break;
-                case blue:
+                case Blue:
                     std::cout << "\033[94m";
                     break;
-                case red:
+                case Red:
                     std::cout << "\033[91m";
                     break;
-                case green:
+                case Green:
                     std::cout << "\033[92m";
                     break;
-                case orange:
+                case Orange:
                     std::cout << "\033[38;5;208m";
                     break;
             }
@@ -90,16 +90,16 @@ Cube::Side& Cube::getSide(Colors color) {
 
 const std::string Cube::colorsToString(Colors color) {
     switch (color) {
-        case Colors::yellow: return "yellow";
-        case Colors::white: return "white";
-        case Colors::blue: return "blue";
-        case Colors::red: return "red";
-        case Colors::green: return "green";
-        case Colors::orange: return "orange";
+        case Colors::Yellow: return "yellow";
+        case Colors::White: return "white";
+        case Colors::Blue: return "blue";
+        case Colors::Red: return "red";
+        case Colors::Green: return "green";
+        case Colors::Orange: return "orange";
     }
 }
 
-void Cube::inverse_move(Side* side, const std::array<int, SIDE_LENGTH>& original_squares, const std::array<int, SIDE_LENGTH>& new_squares) {
+void Cube::inverse_move(Side* side, const std::array<SquarePosition, SIDE_LENGTH>& original_squares, const std::array<SquarePosition, SIDE_LENGTH>& new_squares) {
     Colors temp {};
 
     if (original_squares[0] == new_squares[2] && original_squares[2] == new_squares[0]) {
@@ -116,7 +116,7 @@ void Cube::inverse_move(Side* side, const std::array<int, SIDE_LENGTH>& original
     }
 }
 
-void Cube::makeTurn(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides, const std::array<int, SIDE_LENGTH>& square_positions) {
+void Cube::makeTurn(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides, const std::array<SquarePosition, SIDE_LENGTH>& square_positions) {
    Colors temp {};
 
     for (int i = 1; i < relevant_sides.size(); i++) {
@@ -144,17 +144,17 @@ void Cube::rotate_side_counterclockwise(Side* side) {
     int currIndex = 2;
     int storedIndex = 2;
 
-    for (int i = 0; i < NUM_OF_SQUARES; i++) {
+    for (int i = TopLeftCorner; i < NUM_OF_SQUARES; i++) {
         if (i > 0 && i % SIDE_LENGTH == 0) {
             storedIndex -= 1;
             currIndex = storedIndex;
         }
-        newSide[i] = side->getSquare(currIndex);
+        newSide[i] = side->getSquare(static_cast<SquarePosition> (currIndex));
         currIndex += spacing;
     }
 
-    for (int i = 0; i < NUM_OF_SQUARES; i++) {
-        side->getSquare(i) = newSide[i];
+    for (int i = TopLeftCorner; i < NUM_OF_SQUARES; i++) {
+        side->getSquare(static_cast<SquarePosition>(i)) = newSide[i];
     }
 }
 
@@ -163,28 +163,28 @@ void Cube::rotate_side_clockwise(Side* side) {
     const int spacing = SIDE_LENGTH;
     int currIndex = 6;
     int storedIndex = 6;
-    for (int i = 0; i < NUM_OF_SQUARES; i++) {
+    for (int i = TopLeftCorner; i < NUM_OF_SQUARES; i++) {
         if (i > 0 && i % SIDE_LENGTH == 0) {
             storedIndex += 1;
             currIndex = storedIndex;
         }
-        newSide[i] = side->getSquare(currIndex);
+        newSide[i] = side->getSquare(static_cast<SquarePosition> (currIndex));
         currIndex -= spacing;
     }
 
-    for (int i = 0; i < NUM_OF_SQUARES; i++) {
-        side->getSquare(i) = newSide[i];
+    for (int i = TopLeftCorner; i < NUM_OF_SQUARES; i++) {
+        side->getSquare(static_cast<SquarePosition> (i)) = newSide[i];
     }
 }
 
 void Cube::rotate_up() {
     const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {down, front, up, back};
 
-    inverse_move(back, {6,7,8}, {2,1,0});
-    inverse_move(back, {3,4,5}, {5,4,3});
+    inverse_move(back, {BottomLeftCorner, BottomEdge, BottomRightCorner}, {TopRightCorner, TopEdge, TopLeftCorner});
+    inverse_move(back, {LeftEdge, Middle, RightEdge}, {RightEdge, Middle, LeftEdge});
     rotateHelper(relevant_sides);
-    inverse_move(back, {6,7,8}, {2,1,0});
-    inverse_move(back, {3,4,5}, {5,4,3});
+    inverse_move(back, {BottomLeftCorner, BottomEdge, BottomRightCorner}, {TopRightCorner, TopEdge, TopLeftCorner});
+    inverse_move(back, {LeftEdge, Middle, RightEdge}, {RightEdge, Middle, LeftEdge});
     rotate_side_clockwise(right);
     rotate_side_counterclockwise(left);
     changeSideColor(relevant_sides);
@@ -193,11 +193,11 @@ void Cube::rotate_up() {
 void Cube::rotate_down() {
     const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {back, up, front, down};
 
-    inverse_move(back, {6,7,8}, {2,1,0});
-    inverse_move(back, {3,4,5}, {5,4,3});
+    inverse_move(back, {BottomLeftCorner, BottomEdge, BottomRightCorner}, {TopRightCorner, TopEdge, TopLeftCorner});
+    inverse_move(back, {LeftEdge, Middle, RightEdge}, {RightEdge, Middle, LeftEdge});
     rotateHelper(relevant_sides);
-    inverse_move(back, {6,7,8}, {2,1,0});
-    inverse_move(back, {3,4,5}, {5,4,3});
+    inverse_move(back, {BottomLeftCorner, BottomEdge, BottomRightCorner}, {TopRightCorner, TopEdge, TopLeftCorner});
+    inverse_move(back, {LeftEdge, Middle, RightEdge}, {RightEdge, Middle, LeftEdge});
     rotate_side_clockwise(left);
     rotate_side_counterclockwise(right);
     changeSideColor(relevant_sides);
@@ -223,67 +223,67 @@ void Cube::rotate_right() {
 
 void Cube::left_up() {
     const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {down, front, up, back};
-    const std::array<int, SIDE_LENGTH> left_side_squares = {0, 3, 6};
+    const std::array<SquarePosition, SIDE_LENGTH> left_side_squares = {TopLeftCorner, LeftEdge, BottomLeftCorner};
 
-    inverse_move(back, left_side_squares, {8, 5, 2});
+    inverse_move(back, left_side_squares, {BottomRightCorner, RightEdge, TopRightCorner});
     makeTurn(relevant_sides, left_side_squares);
-    inverse_move(back, left_side_squares, {8, 5, 2});
+    inverse_move(back, left_side_squares, {BottomRightCorner, RightEdge, TopRightCorner});
     rotate_side_counterclockwise(left);
 }
 
 void Cube::left_down() {
     const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {back, up, front, down};
-    const std::array<int, SIDE_LENGTH> left_side_squares = {0, 3, 6};
+    const std::array<SquarePosition, SIDE_LENGTH> left_side_squares = {TopLeftCorner, LeftEdge, BottomLeftCorner};
 
-    inverse_move(back, left_side_squares, {8, 5, 2});
+    inverse_move(back, left_side_squares, {BottomRightCorner, RightEdge, TopRightCorner});
     makeTurn(relevant_sides, left_side_squares);
-    inverse_move(back, left_side_squares, {8, 5, 2});
+    inverse_move(back, left_side_squares, {BottomRightCorner, RightEdge, TopRightCorner});
     rotate_side_clockwise(left);
 }
 
 void Cube::right_up() {
     const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {down, front, up, back};
-    const std::array<int, SIDE_LENGTH> right_side_squares = {2, 5, 8};
+    const std::array<SquarePosition, SIDE_LENGTH> right_side_squares = {TopRightCorner, RightEdge, BottomRightCorner};
 
-    inverse_move(back, right_side_squares, {6, 3, 0});
+    inverse_move(back, right_side_squares, {BottomLeftCorner, LeftEdge, TopLeftCorner});
     makeTurn(relevant_sides, right_side_squares);
-    inverse_move(back, right_side_squares, {6, 3, 0});
+    inverse_move(back, right_side_squares, {BottomLeftCorner, LeftEdge, TopLeftCorner});
     rotate_side_clockwise(right);
 }
 
 void Cube::right_down() {
     const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {back, up, front, down};
-    const std::array<int, SIDE_LENGTH> right_side_squares = {2, 5, 8};
+    const std::array<SquarePosition, SIDE_LENGTH> right_side_squares = {TopRightCorner, RightEdge, BottomRightCorner};
 
-    inverse_move(back, right_side_squares, {6, 3, 0});
+    inverse_move(back, right_side_squares, {BottomLeftCorner, LeftEdge, TopLeftCorner});
     makeTurn(relevant_sides, right_side_squares);
-    inverse_move(back, right_side_squares, {6, 3, 0});
+    inverse_move(back, right_side_squares, {BottomLeftCorner, LeftEdge, TopLeftCorner});
     rotate_side_counterclockwise(right);
 }
 
 void Cube::middle_up() {
     const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {down, front, up, back};
-    const std::array<int, SIDE_LENGTH> middle_side_squares = {1, 4, 7};
+    const std::array<SquarePosition, SIDE_LENGTH> middle_side_squares = {TopEdge, Middle, BottomEdge};
 
-    inverse_move(back, middle_side_squares, {7, 4, 1});
+    inverse_move(back, middle_side_squares, {BottomEdge, Middle, TopEdge});
     makeTurn(relevant_sides, middle_side_squares);
-    inverse_move(back, middle_side_squares, {7, 4, 1});
+    inverse_move(back, middle_side_squares, {BottomEdge, Middle, TopEdge});
     changeSideColor(relevant_sides);
 }
 
 void Cube::middle_down() {
     const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {back, up, front, down};
-    const std::array<int, SIDE_LENGTH> middle_side_squares = {1, 4, 7};
+    const std::array<SquarePosition, SIDE_LENGTH> middle_side_squares = {TopEdge, Middle, BottomEdge};
 
-    inverse_move(back, middle_side_squares, {7, 4, 1});
+    inverse_move(back, middle_side_squares, {BottomEdge, Middle, TopEdge});
     makeTurn(relevant_sides, middle_side_squares);
-    inverse_move(back, middle_side_squares, {7, 4, 1});
+    inverse_move(back, middle_side_squares, {BottomEdge, Middle, TopEdge});
     changeSideColor(relevant_sides);
 }
 
 void Cube::middle_left() {
    const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {front, left, back, right};
-   const std::array<int, SIDE_LENGTH> middle_side_squares = {3, 4, 5};
+   const std::array<SquarePosition, SIDE_LENGTH> middle_side_squares = {LeftEdge, Middle, RightEdge};
 
    makeTurn(relevant_sides, middle_side_squares);
    changeSideColor(relevant_sides);
@@ -291,7 +291,7 @@ void Cube::middle_left() {
 
 void Cube::middle_right() {
    const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {right, back, left, front};
-   const std::array<int, SIDE_LENGTH> middle_side_squares = {3, 4, 5};
+   const std::array<SquarePosition, SIDE_LENGTH> middle_side_squares = {LeftEdge, Middle, RightEdge};
 
    makeTurn(relevant_sides, middle_side_squares);
    changeSideColor(relevant_sides);
@@ -299,7 +299,7 @@ void Cube::middle_right() {
 
 void Cube::top_left() {
     const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {front, left, back, right};
-    const std::array<int, SIDE_LENGTH> top_side_squares = {0, 1, 2};
+    const std::array<SquarePosition, SIDE_LENGTH> top_side_squares = {TopLeftCorner, TopEdge, TopRightCorner};
 
     makeTurn(relevant_sides, top_side_squares);
     rotate_side_clockwise(up);
@@ -307,7 +307,7 @@ void Cube::top_left() {
 
 void Cube::top_right() {
     const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {right, back, left, front};
-    const std::array<int, SIDE_LENGTH> top_side_squares = {0, 1, 2};
+    const std::array<SquarePosition, SIDE_LENGTH> top_side_squares = {TopLeftCorner, TopEdge, TopRightCorner};
 
     makeTurn(relevant_sides, top_side_squares);
     rotate_side_counterclockwise(up);
@@ -315,7 +315,7 @@ void Cube::top_right() {
 
 void Cube::bottom_left() {
     const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {front, left, back, right};
-    const std::array<int, SIDE_LENGTH> top_side_squares = {6, 7, 8};
+    const std::array<SquarePosition, SIDE_LENGTH> top_side_squares = {BottomLeftCorner, BottomEdge, BottomRightCorner};
 
     makeTurn(relevant_sides, top_side_squares);
     rotate_side_counterclockwise(down);
@@ -323,7 +323,7 @@ void Cube::bottom_left() {
 
 void Cube::bottom_right() {
     const std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {right, back, left, front};
-    const std::array<int, SIDE_LENGTH> top_side_squares = {6, 7, 8};
+    const std::array<SquarePosition, SIDE_LENGTH> top_side_squares = {BottomLeftCorner, BottomEdge, BottomRightCorner};
 
     makeTurn(relevant_sides, top_side_squares);
     rotate_side_clockwise(down);
@@ -429,7 +429,7 @@ void Cube::scramble() {
 
 void Cube::changeSideColor(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides) {
     for (int i = 0; i < NUM_OF_BODY_SIDES; i++) {
-        color_to_side[relevant_sides[i]->getSquare(4)] = relevant_sides[i];
+        color_to_side[relevant_sides[i]->getSquare(Middle)] = relevant_sides[i];
     }
 }
 
@@ -444,185 +444,151 @@ const std::string Cube::sideToPosition(Side* side) {
 }
 
 Cube::PieceLocation Cube::find_missing_white_edge() {
-    const std::array<int, 4> relevant_squares = {1,3,5,7};
+    const std::array<SquarePosition, 4> relevant_squares = {TopEdge, LeftEdge, RightEdge, BottomEdge};
     for (int i = 0; i < NUM_OF_SIDES; i++) {
         for (int j = 0; j < relevant_squares.size(); j++) {
-            if (color_to_side[static_cast<Colors> (i)]->getSquare(relevant_squares[j]) == white && color_to_side[static_cast<Colors> (i)] != &getSide(yellow)) {
-                return {i, relevant_squares[j]};
+            if (color_to_side[static_cast<Colors> (i)]->getSquare(relevant_squares[j]) == White && color_to_side[static_cast<Colors> (i)] != &getSide(Yellow)) {
+                return {i, static_cast<SquarePosition> (relevant_squares[j])};
             }
         }
     }
-    return {-1, -1};
+    return {-1, Middle};
+}
+
+void Cube::turnTopUntil(std::function<bool()> condition) {
+    while (condition()) {
+        top_left();
+    }
 }
 
 void Cube::whiteCross() {
     // ROTATE CUBE SO YELLOW IS TOP
-    if (sideToPosition(&getSide(yellow)) == "down") {
+    if (&getSide(Yellow) == down) {
         rotate_up();
         rotate_up();
     }
-    else if (sideToPosition(&getSide(yellow)) == "left") {
+    else if (&getSide(Yellow) == left) {
         rotate_right();
         rotate_up();
     }
-    else if (sideToPosition(&getSide(yellow)) == "right") {
+    else if (&getSide(Yellow) == right) {
         rotate_left();
         rotate_up();
     }
-    else if (sideToPosition(&getSide(yellow)) == "front") {
+    else if (&getSide(Yellow) == front) {
         rotate_up();
     }
-    else if (sideToPosition(&getSide(yellow)) == "back") {
+    else if (&getSide(Yellow) == back) {
         rotate_down();
     }
 
     // DEVELOPING SUNFLOWER
     PieceLocation white_edge{};
-    while ((white_edge = find_missing_white_edge()), white_edge.face != -1 || white_edge.index != -1) {
-        if (sideToPosition(color_to_side[static_cast<Colors> (white_edge.face)]) == "down") {
-            if (white_edge.index == 1) {
-                while (up->getSquare(7) == white) {
-                    top_left();
-                }
+    while ((white_edge = find_missing_white_edge()), white_edge.face != -1 || white_edge.pos != Middle) {
+        if (color_to_side[static_cast<Colors> (white_edge.face)] == down) {
+            if (white_edge.pos == TopEdge) {
+                turnTopUntil([&]() { return up->getSquare(BottomEdge) == White; });
                 front_left();
                 front_left();
             }
-            else if (white_edge.index == 3) {
-                while (up->getSquare(3) == white) {
-                    top_left();
-                }
+            else if (white_edge.pos == LeftEdge) {
+                turnTopUntil([&]() { return up->getSquare(LeftEdge) == White; });
                 left_up();
                 left_up();
             }
-            else if (white_edge.index == 5) {
-                while (up->getSquare(5) == white) {
-                    top_left();
-                }
+            else if (white_edge.pos == RightEdge) {
+                turnTopUntil([&]() { return up->getSquare(RightEdge) == White; });
                 right_up();
                 right_up();
             }
-            else if (white_edge.index == 7) {
-                while (up->getSquare(1) == white) {
-                    top_left();
-                }
+            else if (white_edge.pos == BottomEdge) {
+                turnTopUntil([&]() { return up->getSquare(TopEdge) == White; });
                 back_left();
                 back_left();
             }
         }
 
-        else if (sideToPosition(color_to_side[static_cast<Colors> (white_edge.face)]) == "left") {
-            if (white_edge.index == 1) {
+        else if (color_to_side[static_cast<Colors> (white_edge.face)] == left) {
+            if (white_edge.pos == TopEdge) {
                 left_up();
-                while (up->getSquare(1) == white) {
-                    top_left();
-                }
+                turnTopUntil([&]() { return up->getSquare(TopEdge) == White; });
                 back_right();
             }
-            else if (white_edge.index == 3) {
-                while (up->getSquare(1) == white) {
-                    top_left();
-                }
+            else if (white_edge.pos == LeftEdge) {
+                turnTopUntil([&]() { return up->getSquare(TopEdge) == White; });
                 back_right();
             }
-            else if (white_edge.index == 5) {
-                while (up->getSquare(7) == white) {
-                    top_left();
-                }
+            else if (white_edge.pos == RightEdge) {
+                turnTopUntil([&]() { return up->getSquare(BottomEdge) == White ;});
                 front_right();
             }
-            else if (white_edge.index == 7) {
-                while (up->getSquare(3) == white) {
-                    top_left();
-                }
+            else if (white_edge.pos == BottomEdge) {
+                turnTopUntil([&]() { return up->getSquare(LeftEdge) == White; });
                 left_down();
                 top_left();
                 back_right();
             }
         }
 
-        else if (sideToPosition(color_to_side[static_cast<Colors> (white_edge.face)]) == "front") {
-            if (white_edge.index == 1) {
+        else if (color_to_side[static_cast<Colors> (white_edge.face)] == front) {
+            if (white_edge.pos == TopEdge) {
                 front_left();
-                while (up->getSquare(3) == white) {
-                    top_left();
-                }
+                turnTopUntil([&]() { return up->getSquare(LeftEdge) == White; });
                 left_up();
             }
-            else if (white_edge.index == 3) {
-                while (up->getSquare(3) == white) {
-                    top_left();
-                }
+            else if (white_edge.pos == LeftEdge) {
+                turnTopUntil([&]() { return up->getSquare(LeftEdge) == White; });
                 left_up();
             }
-            else if (white_edge.index == 5) {
-                while (up->getSquare(5) == white) {
-                    top_left();
-                }
+            else if (white_edge.pos == RightEdge) {
+                turnTopUntil([&]() { return up->getSquare(RightEdge) == White; });
                 right_up();
             }
-            else if (white_edge.index == 7) {
-                while (up->getSquare(3) == white) {
-                    top_left();
-                }
+            else if (white_edge.pos == BottomEdge) {
+                turnTopUntil([&]() { return up->getSquare(LeftEdge) == White; });
                 front_right();
                 top_left();
                 left_up();
             }
         }
 
-        else if (sideToPosition(color_to_side[static_cast<Colors> (white_edge.face)]) == "right") {
-            if (white_edge.index == 1) {
+        else if (color_to_side[static_cast<Colors> (white_edge.face)] == right) {
+            if (white_edge.pos == TopEdge) {
                 right_down();
-                while (up->getSquare(7) == white) {
-                    top_left();
-                }
+                turnTopUntil([&]() { return up->getSquare(BottomEdge) == White; });
                 front_left();
             }
-            else if (white_edge.index == 3) {
-                while (up->getSquare(7) == white) {
-                    top_left();
-                }
+            else if (white_edge.pos == LeftEdge) {
+                turnTopUntil([&]() { return up->getSquare(BottomEdge) == White; });
                 front_left();
             }
-            else if (white_edge.index == 5) {
-                while (up->getSquare(1) == white) {
-                    top_left();
-                }
+            else if (white_edge.pos == RightEdge) {
+                turnTopUntil([&]() { return up->getSquare(TopEdge) == White; });
                 back_left();
             }
-            else if (white_edge.index == 7) {
-                while (up->getSquare(5) == white) {
-                    top_left();
-                }
+            else if (white_edge.pos == BottomEdge) {
+                turnTopUntil([&]() { return up->getSquare(RightEdge) == White; });
                 right_down();
                 top_left();
                 back_left();
             }
         }
-        else if (sideToPosition(color_to_side[static_cast<Colors> (white_edge.face)]) == "back") {
-            if (white_edge.index == 1) {
+        else if (color_to_side[static_cast<Colors> (white_edge.face)] == back) {
+            if (white_edge.pos == TopEdge) {
                 back_right();
-                while (up->getSquare(5) == white) {
-                    top_left();
-                }
+                turnTopUntil([&]() { return up->getSquare(RightEdge) == White; });
                 right_down();
             }
-            else if (white_edge.index == 3) {
-                while (up->getSquare(5) == white) {
-                    top_left();
-                }
+            else if (white_edge.pos == LeftEdge) {
+                turnTopUntil([&]() { return up->getSquare(RightEdge) == White; });
                 right_down();
             }
-            else if (white_edge.index == 5) {
-                while (up->getSquare(3) == white) {
-                    top_left();
-                }
+            else if (white_edge.pos == RightEdge) {
+                turnTopUntil([&]() { return up->getSquare(LeftEdge) == White; });
                 left_down();
             }
-            else if (white_edge.index == 7) {
-                while (up->getSquare(1) == white) {
-                    top_left();
-                }
+            else if (white_edge.pos == BottomEdge) {
+                turnTopUntil([&]() { return up->getSquare(TopEdge) == White; });
                 back_left();
                 top_left();
                 right_down();
@@ -633,30 +599,22 @@ void Cube::whiteCross() {
     std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {left, front, right, back};
     for (int i = 0; i < NUM_OF_BODY_SIDES; i++) {
         if (relevant_sides[i] == left) {
-            while (relevant_sides[i]->getSquare(1) != relevant_sides[i]->getSquare(4) || up->getSquare(3) != white) {
-                top_left();
-            }
+            turnTopUntil([&]() { return (relevant_sides[i]->getSquare(TopEdge) != relevant_sides[i]->getSquare(Middle) || up->getSquare(LeftEdge) != White); });
             left_up();
             left_up();
         }
         else if (relevant_sides[i] == front) {
-            while (relevant_sides[i]->getSquare(1) != relevant_sides[i]->getSquare(4) || up->getSquare(7) != white) {
-                top_left();
-            }
+            turnTopUntil([&]() { return (relevant_sides[i]->getSquare(TopEdge) != relevant_sides[i]->getSquare(Middle) || up->getSquare(BottomEdge) != White); });
             front_left();
             front_left();
         }
         else if (relevant_sides[i] == right) {
-             while (relevant_sides[i]->getSquare(1) != relevant_sides[i]->getSquare(4) || up->getSquare(5) != white) {
-                top_left();
-            }
+            turnTopUntil([&]() { return (relevant_sides[i]->getSquare(TopEdge) != relevant_sides[i]->getSquare(Middle) || up->getSquare(RightEdge) != White); });
             right_up();
             right_up();
         }
         else if (relevant_sides[i] == back) {
-             while (relevant_sides[i]->getSquare(1) != relevant_sides[i]->getSquare(4) || up->getSquare(1) != white) {
-                top_left();
-            }
+            turnTopUntil([&]() { return (relevant_sides[i]->getSquare(TopEdge) != relevant_sides[i]->getSquare(Middle) || up->getSquare(TopEdge) != White); });
             back_left();
             back_left();
         }

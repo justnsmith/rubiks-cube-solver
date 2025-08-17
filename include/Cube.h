@@ -4,6 +4,7 @@
 #include <Side.h>
 #include <unordered_map>
 #include <vector>
+#include <functional>
 #define NUM_OF_SIDES 6
 #define NUM_OF_BODY_SIDES 4
 #define SIDE_LENGTH 3
@@ -21,20 +22,21 @@ private:
 
     struct PieceLocation {
         int face{};
-        int index{};
+        SquarePosition pos{};
     };
 
     void initailizeCube();
     const std::string colorsToString(Colors color);
     const std::string sideToPosition(Side* Side);
-    void makeTurn(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides, const std::array<int, SIDE_LENGTH>& left_side_squares);
+    void makeTurn(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides, const std::array<SquarePosition, SIDE_LENGTH>& left_side_squares);
     void rotateHelper(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides);
     void rotate_side_counterclockwise(Side* side);
     void rotate_side_clockwise(Side* side);
-    void inverse_move(Side* side, const std::array<int, SIDE_LENGTH>& original_squares, const std::array<int, SIDE_LENGTH>& new_squares);
+    void inverse_move(Side* side, const std::array<SquarePosition, SIDE_LENGTH>& original_squares, const std::array<SquarePosition, SIDE_LENGTH>& new_squares);
     void changeSideColor(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides);
     void whiteCross();
     PieceLocation find_missing_white_edge();
+    void turnTopUntil(std::function<bool()> condition);
 
 public:
     Cube();

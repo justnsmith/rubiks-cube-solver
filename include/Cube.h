@@ -34,7 +34,7 @@ private:
     void inverse_move(Side* side, const std::array<int, SIDE_LENGTH>& original_squares, const std::array<int, SIDE_LENGTH>& new_squares);
     void changeSideColor(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides);
     void whiteCross();
-    std::vector<PieceLocation> find_white_edges();
+    PieceLocation find_missing_white_edge();
 
 public:
     Cube();

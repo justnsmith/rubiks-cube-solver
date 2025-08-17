@@ -443,22 +443,19 @@ const std::string Cube::sideToPosition(Side* side) {
     return "unknown";
 }
 
-std::vector<Cube::PieceLocation> Cube::find_white_edges() {
+Cube::PieceLocation Cube::find_missing_white_edge() {
     const std::array<int, 4> relevant_squares = {1,3,5,7};
-    std::vector<PieceLocation> white_edge_locations {};
     for (int i = 0; i < NUM_OF_SIDES; i++) {
         for (int j = 0; j < relevant_squares.size(); j++) {
-            if (color_to_side[static_cast<Colors> (i)]->getSquare(relevant_squares[j]) == white) {
-                white_edge_locations.push_back({i, relevant_squares[j]});
+            if (color_to_side[static_cast<Colors> (i)]->getSquare(relevant_squares[j]) == white && color_to_side[static_cast<Colors> (i)] != &getSide(yellow)) {
+                return {i, relevant_squares[j]};
             }
         }
     }
-    return white_edge_locations;
+    return {-1, -1};
 }
 
 void Cube::whiteCross() {
-    std::vector<PieceLocation> white_edge_locations = find_white_edges();
-
     // ROTATE CUBE SO YELLOW IS TOP
     if (sideToPosition(&getSide(yellow)) == "down") {
         rotate_up();
@@ -479,259 +476,190 @@ void Cube::whiteCross() {
         rotate_down();
     }
 
-    int i = 0;
-    while (white_edge_locations.size() != 0) {
-        bool erased = false;
-        if (white_edge_locations[i].face == yellow) {
-            white_edge_locations.erase(white_edge_locations.begin() + i);
-            erased = true;
-        }
-
-        else if (sideToPosition(color_to_side[static_cast<Colors> (white_edge_locations[i].face)]) == "down") {
-            if (white_edge_locations[i].index == 1) {
-                bool noImpactingWhiteEdges = (
-                    left->getSquare(5)  != white &&
-                    right->getSquare(1) != white &&
-                    front->getSquare(3) != white &&
-                    front->getSquare(5) != white &&
-                    front->getSquare(7) != white
-                );
-                if (noImpactingWhiteEdges) {
-                    while (up->getSquare(7) == white) {
-                        top_left();
-                    }
-                    front_left();
-                    front_left();
-                    white_edge_locations.erase(white_edge_locations.begin() + i);
-                    erased = true;
+    // DEVELOPING SUNFLOWER
+    PieceLocation white_edge{};
+    while ((white_edge = find_missing_white_edge()), white_edge.face != -1 || white_edge.index != -1) {
+        if (sideToPosition(color_to_side[static_cast<Colors> (white_edge.face)]) == "down") {
+            if (white_edge.index == 1) {
+                while (up->getSquare(7) == white) {
+                    top_left();
                 }
+                front_left();
+                front_left();
             }
-            else if (white_edge_locations[i].index == 3) {
-                bool noImpactingWhiteEdges = (
-                    front->getSquare(3) != white &&
-                    back->getSquare(5)  != white &&
-                    left->getSquare(1)  != white &&
-                    left->getSquare(3)  != white &&
-                    left->getSquare(5)  != white &&
-                    left->getSquare(7)  != white
-                );
-                if (noImpactingWhiteEdges) {
-                    while (up->getSquare(3) == white) {
-                        top_left();
-                    }
-                    left_up();
-                    left_up();
-                    white_edge_locations.erase(white_edge_locations.begin() + i);
-                    erased = true;
+            else if (white_edge.index == 3) {
+                while (up->getSquare(3) == white) {
+                    top_left();
                 }
+                left_up();
+                left_up();
             }
-            else if (white_edge_locations[i].index == 5) {
-                bool noImpactingWhiteEdges = (
-                    front->getSquare(5) != white &&
-                    back->getSquare(3)  != white &&
-                    right->getSquare(1) != white &&
-                    right->getSquare(3) != white &&
-                    right->getSquare(5) != white &&
-                    right->getSquare(7) != white
-                );
-                if (noImpactingWhiteEdges) {
-                    while (up->getSquare(5) == white) {
-                        top_left();
-                    }
-                    right_up();
-                    right_up();
-                    white_edge_locations.erase(white_edge_locations.begin() + i);
-                    erased = true;
+            else if (white_edge.index == 5) {
+                while (up->getSquare(5) == white) {
+                    top_left();
                 }
+                right_up();
+                right_up();
             }
-            else if (white_edge_locations[i].index == 7) {
-                bool noImpactingWhiteEdges = (
-                    right->getSquare(5) != white &&
-                    left->getSquare(3) != white &&
-                    back->getSquare(1) != white &&
-                    back->getSquare(3) != white &&
-                    back->getSquare(5) != white &&
-                    back->getSquare(7) != white
-                );
-                if (noImpactingWhiteEdges) {
-                    while (up->getSquare(1) == white) {
-                        top_left();
-                    }
-                    back_left();
-                    back_left();
-                    white_edge_locations.erase(white_edge_locations.begin() + i);
-                    erased = true;
+            else if (white_edge.index == 7) {
+                while (up->getSquare(1) == white) {
+                    top_left();
                 }
+                back_left();
+                back_left();
             }
         }
 
-        else if (sideToPosition(color_to_side[static_cast<Colors> (white_edge_locations[i].face)]) == "left") {
-            if (white_edge_locations[i].index == 1) {
-                bool noImpactingWhiteEdges_LeftSide = (
-                    front->getSquare(3) != white &&
-                    right->getSquare(5) != white &&
-                    down->getSquare(1)  != white &&
-                    down->getSquare(3)  != white &&
-                    left->getSquare(3)  != white &&
-                    left->getSquare(5)  != white &&
-                    left->getSquare(7)  != white &&
-                    back->getSquare(1)  != white &&
-                    back->getSquare(3)  != white &&
-                    back->getSquare(5)  != white &&
-                    back->getSquare(7)  != white
-                );
-                bool noImpactingWhiteEdges_RightSide = (
-                    right->getSquare(3) != white &&
-                    back->getSquare(5)  != white &&
-                    down->getSquare(1)  != white &&
-                    down->getSquare(3)  != white &&
-                    left->getSquare(3)  != white &&
-                    left->getSquare(5)  != white &&
-                    left->getSquare(7)  != white &&
-                    front->getSquare(1) != white &&
-                    front->getSquare(3) != white &&
-                    front->getSquare(5) != white &&
-                    front->getSquare(7) != white
-                );
-                if (noImpactingWhiteEdges_LeftSide) {
-                    left_up();
-                    while (up->getSquare(1) == white) {
-                        top_left();
-                    }
-                    back_right();
-                    white_edge_locations.erase(white_edge_locations.begin() + i);
-                    erased = true;
+        else if (sideToPosition(color_to_side[static_cast<Colors> (white_edge.face)]) == "left") {
+            if (white_edge.index == 1) {
+                left_up();
+                while (up->getSquare(1) == white) {
+                    top_left();
                 }
-                else if (noImpactingWhiteEdges_RightSide) {
-                    left_down();
-                    while (up->getSquare(7) == white) {
-                        top_left();
-                    }
-                    front_right();
-                    white_edge_locations.erase(white_edge_locations.begin() + i);
-                    erased = true;
-                }
+                back_right();
             }
-            else if (white_edge_locations[i].index == 3) {
-                bool noImpactingWhiteEdges = (
-                    down->getSquare(7)  != white &&
-                    right->getSquare(5) != white &&
-                    back->getSquare(1)  != white &&
-                    back->getSquare(3)  != white &&
-                    back->getSquare(5)  != white &&
-                    back->getSquare(7)  != white
-                );
-                if (noImpactingWhiteEdges) {
-                    while (up->getSquare(1) == white) {
-                        top_left();
-                    }
-                    back_right();
+            else if (white_edge.index == 3) {
+                while (up->getSquare(1) == white) {
+                    top_left();
                 }
-                else {
-                    back_right();
-                    while (up->getSquare(1) == white) {
-                        top_left();
-                    }
-                    back_left();
-                }
-                white_edge_locations.erase(white_edge_locations.begin() + i);
-                erased = true;
+                back_right();
             }
-            else if (white_edge_locations[i].index == 5) {
-                bool noImpactingWhiteEdges = (
-                    down->getSquare(1) != white &&
-                    right->getSquare(3) != white &&
-                    front->getSquare(1) != white &&
-                    front->getSquare(3) != white &&
-                    front->getSquare(5) != white &&
-                    front->getSquare(7) != white
-                );
-                if (noImpactingWhiteEdges) {
-                    while (up->getSquare(7) == white) {
-                        top_left();
-                    }
-                    front_right();
+            else if (white_edge.index == 5) {
+                while (up->getSquare(7) == white) {
+                    top_left();
                 }
-                else {
-                    front_right();
-                    while (up->getSquare(7) == white) {
-                        top_left();
-                    }
-                    front_left();
-                }
-                white_edge_locations.erase(white_edge_locations.begin() + i);
-                erased = true;
+                front_right();
             }
-            else if (white_edge_locations[i].index == 7) {
-                bool noImpactingWhiteEdges_LeftSide = (
-                    front->getSquare(3) != white &&
-                    right->getSquare(5) != white &&
-                    down->getSquare(1)  != white &&
-                    down->getSquare(3)  != white &&
-                    left->getSquare(3)  != white &&
-                    left->getSquare(5)  != white &&
-                    left->getSquare(7)  != white &&
-                    back->getSquare(1)  != white &&
-                    back->getSquare(3)  != white &&
-                    back->getSquare(5)  != white &&
-                    back->getSquare(7)  != white
-                );
-                bool noImpactingWhiteEdges_RightSide = (
-                    right->getSquare(3) != white &&
-                    back->getSquare(5)  != white &&
-                    down->getSquare(1)  != white &&
-                    down->getSquare(3)  != white &&
-                    left->getSquare(3)  != white &&
-                    left->getSquare(5)  != white &&
-                    left->getSquare(7)  != white &&
-                    front->getSquare(1) != white &&
-                    front->getSquare(3) != white &&
-                    front->getSquare(5) != white &&
-                    front->getSquare(7) != white
-                );
-                if (noImpactingWhiteEdges_LeftSide) {
-                    left_down();
-                    while(up->getSquare(1) == white) {
-                        top_left();
-                    }
-                    back_right();
-                    white_edge_locations.erase(white_edge_locations.begin() + i);
-                    erased = true;
+            else if (white_edge.index == 7) {
+                while (up->getSquare(3) == white) {
+                    top_left();
                 }
-                else if (noImpactingWhiteEdges_RightSide) {
-                    left_up();
-                    while (up->getSquare(7) == white) {
-                        top_left();
-                    }
-                    front_right();
-                    white_edge_locations.erase(white_edge_locations.begin() + i);
-                    erased = true;
-                }
+                left_down();
+                top_left();
+                back_right();
             }
         }
 
-        else if (sideToPosition(color_to_side[static_cast<Colors> (white_edge_locations[i].face)]) == "front") {
-
+        else if (sideToPosition(color_to_side[static_cast<Colors> (white_edge.face)]) == "front") {
+            if (white_edge.index == 1) {
+                front_left();
+                while (up->getSquare(3) == white) {
+                    top_left();
+                }
+                left_up();
+            }
+            else if (white_edge.index == 3) {
+                while (up->getSquare(3) == white) {
+                    top_left();
+                }
+                left_up();
+            }
+            else if (white_edge.index == 5) {
+                while (up->getSquare(5) == white) {
+                    top_left();
+                }
+                right_up();
+            }
+            else if (white_edge.index == 7) {
+                while (up->getSquare(3) == white) {
+                    top_left();
+                }
+                front_right();
+                top_left();
+                left_up();
+            }
         }
 
-        else if (sideToPosition(color_to_side[static_cast<Colors> (white_edge_locations[i].face)]) == "right") {
-
+        else if (sideToPosition(color_to_side[static_cast<Colors> (white_edge.face)]) == "right") {
+            if (white_edge.index == 1) {
+                right_down();
+                while (up->getSquare(7) == white) {
+                    top_left();
+                }
+                front_left();
+            }
+            else if (white_edge.index == 3) {
+                while (up->getSquare(7) == white) {
+                    top_left();
+                }
+                front_left();
+            }
+            else if (white_edge.index == 5) {
+                while (up->getSquare(1) == white) {
+                    top_left();
+                }
+                back_left();
+            }
+            else if (white_edge.index == 7) {
+                while (up->getSquare(5) == white) {
+                    top_left();
+                }
+                right_down();
+                top_left();
+                back_left();
+            }
         }
-
-        else if (sideToPosition(color_to_side[static_cast<Colors> (white_edge_locations[i].face)]) == "back") {
-
-        }
-
-        if (i == white_edge_locations.size()) {
-            i = 0;
-        }
-        else if (!erased) {
-            i++;
+        else if (sideToPosition(color_to_side[static_cast<Colors> (white_edge.face)]) == "back") {
+            if (white_edge.index == 1) {
+                back_right();
+                while (up->getSquare(5) == white) {
+                    top_left();
+                }
+                right_down();
+            }
+            else if (white_edge.index == 3) {
+                while (up->getSquare(5) == white) {
+                    top_left();
+                }
+                right_down();
+            }
+            else if (white_edge.index == 5) {
+                while (up->getSquare(3) == white) {
+                    top_left();
+                }
+                left_down();
+            }
+            else if (white_edge.index == 7) {
+                while (up->getSquare(1) == white) {
+                    top_left();
+                }
+                back_left();
+                top_left();
+                right_down();
+            }
         }
     }
 
-    for (int i = 0; i < white_edge_locations.size(); i++) {
-        std::cout << colorsToString(static_cast<Colors>(white_edge_locations[i].face)) << " " << white_edge_locations[i].index << std::endl;
+    std::array<Side*, NUM_OF_BODY_SIDES> relevant_sides = {left, front, right, back};
+    for (int i = 0; i < NUM_OF_BODY_SIDES; i++) {
+        if (relevant_sides[i] == left) {
+            while (relevant_sides[i]->getSquare(1) != relevant_sides[i]->getSquare(4) || up->getSquare(3) != white) {
+                top_left();
+            }
+            left_up();
+            left_up();
+        }
+        else if (relevant_sides[i] == front) {
+            while (relevant_sides[i]->getSquare(1) != relevant_sides[i]->getSquare(4) || up->getSquare(7) != white) {
+                top_left();
+            }
+            front_left();
+            front_left();
+        }
+        else if (relevant_sides[i] == right) {
+             while (relevant_sides[i]->getSquare(1) != relevant_sides[i]->getSquare(4) || up->getSquare(5) != white) {
+                top_left();
+            }
+            right_up();
+            right_up();
+        }
+        else if (relevant_sides[i] == back) {
+             while (relevant_sides[i]->getSquare(1) != relevant_sides[i]->getSquare(4) || up->getSquare(1) != white) {
+                top_left();
+            }
+            back_left();
+            back_left();
+        }
     }
 }
 

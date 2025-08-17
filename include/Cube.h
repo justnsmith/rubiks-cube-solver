@@ -35,14 +35,15 @@ private:
     void inverse_move(Side* side, const std::array<SquarePosition, SIDE_LENGTH>& original_squares, const std::array<SquarePosition, SIDE_LENGTH>& new_squares);
     void changeSideColor(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides);
     void whiteCross();
-    PieceLocation find_missing_white_edge();
+    PieceLocation find_missing_white_edge() const;
     void turnTopUntil(std::function<bool()> condition);
 
 public:
     Cube();
+    friend bool operator==(const Cube& lhs, const Cube& rhs);
 
-    Side& getSide(Colors color);
-    void printCube();
+    Side& getSide(Colors color) const;
+    void printCube() const;
     void rotate_up();
     void rotate_down();
     void rotate_left();

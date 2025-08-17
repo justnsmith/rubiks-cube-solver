@@ -5,6 +5,17 @@ Cube::Cube() {
     initailizeCube();
 }
 
+bool operator==(const Cube& lhs, const Cube& rhs) {
+    for (int i = 0; i < NUM_OF_SIDES; i++) {
+        for (int j = 0; j < NUM_OF_SQUARES; j++) {
+            if (lhs.getSide(static_cast<Side::Colors> (i)).getSquare(static_cast<Side::SquarePosition> (j)) != rhs.getSide(static_cast<Side::Colors> (i)).getSquare(static_cast<Side::SquarePosition> (j))) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 void Cube::initailizeCube() {
     for (int side = 0; side < NUM_OF_SIDES; side++) {
         Colors current_side = static_cast<Colors> (side);
@@ -12,31 +23,31 @@ void Cube::initailizeCube() {
             case Yellow:
                 up = &sides[current_side];
                 break;
-            case White:
+                case White:
                 down = &sides[side];
                 break;
-            case Blue:
+                case Blue:
                 left = &sides[side];
                 break;
-            case Red:
+                case Red:
                 front = &sides[side];
                 break;
-            case Green:
+                case Green:
                 right = &sides[side];
                 break;
-            case Orange:
+                case Orange:
                 back = &sides[side];
                 break;
-        }
-        color_to_side[current_side] = &sides[side];
-        for (int square = TopLeftCorner; square < NUM_OF_SQUARES; square++) {
-            sides[side].getSquare(static_cast<SquarePosition> (square)) = current_side;
+            }
+            color_to_side[current_side] = &sides[side];
+            for (int square = TopLeftCorner; square < NUM_OF_SQUARES; square++) {
+                sides[side].getSquare(static_cast<SquarePosition> (square)) = current_side;
+            }
         }
     }
-}
 
-void Cube::printCube() {
-    const std::array<Side*, NUM_OF_BODY_SIDES> cube_side_order = {left, front, back, right};
+    void Cube::printCube() const {
+        const std::array<Side*, NUM_OF_BODY_SIDES> cube_side_order = {left, front, back, right};
     const int row_of_squares = SIDE_LENGTH;
     const int col_of_squares = SIDE_LENGTH;
 
@@ -84,8 +95,8 @@ void Cube::printCube() {
     down->printSide();
 }
 
-Cube::Side& Cube::getSide(Colors color) {
-    return *(color_to_side[color]);
+Cube::Side& Cube::getSide(Colors color) const {
+    return *(color_to_side.at(color));
 }
 
 const std::string Cube::colorsToString(Colors color) {
@@ -443,11 +454,11 @@ const std::string Cube::sideToPosition(Side* side) {
     return "unknown";
 }
 
-Cube::PieceLocation Cube::find_missing_white_edge() {
+Cube::PieceLocation Cube::find_missing_white_edge() const {
     const std::array<SquarePosition, 4> relevant_squares = {TopEdge, LeftEdge, RightEdge, BottomEdge};
     for (int i = 0; i < NUM_OF_SIDES; i++) {
         for (int j = 0; j < relevant_squares.size(); j++) {
-            if (color_to_side[static_cast<Colors> (i)]->getSquare(relevant_squares[j]) == White && color_to_side[static_cast<Colors> (i)] != &getSide(Yellow)) {
+            if (getSide(static_cast<Colors> (i)).getSquare(relevant_squares[j]) == White && &getSide(static_cast<Colors> (i)) != &getSide(Yellow)) {
                 return {i, static_cast<SquarePosition> (relevant_squares[j])};
             }
         }
@@ -485,7 +496,7 @@ void Cube::whiteCross() {
     // DEVELOPING SUNFLOWER
     PieceLocation white_edge{};
     while ((white_edge = find_missing_white_edge()), white_edge.face != -1 || white_edge.pos != Middle) {
-        if (color_to_side[static_cast<Colors> (white_edge.face)] == down) {
+        if (&getSide(static_cast<Colors> (white_edge.face)) == down) {
             if (white_edge.pos == TopEdge) {
                 turnTopUntil([&]() { return up->getSquare(BottomEdge) == White; });
                 front_left();
@@ -508,7 +519,7 @@ void Cube::whiteCross() {
             }
         }
 
-        else if (color_to_side[static_cast<Colors> (white_edge.face)] == left) {
+        else if (&getSide(static_cast<Colors> (white_edge.face)) == left) {
             if (white_edge.pos == TopEdge) {
                 left_up();
                 turnTopUntil([&]() { return up->getSquare(TopEdge) == White; });
@@ -519,7 +530,7 @@ void Cube::whiteCross() {
                 back_right();
             }
             else if (white_edge.pos == RightEdge) {
-                turnTopUntil([&]() { return up->getSquare(BottomEdge) == White ;});
+                turnTopUntil([&]() { return up->getSquare(BottomEdge) == White; });
                 front_right();
             }
             else if (white_edge.pos == BottomEdge) {
@@ -530,7 +541,7 @@ void Cube::whiteCross() {
             }
         }
 
-        else if (color_to_side[static_cast<Colors> (white_edge.face)] == front) {
+        else if (&getSide(static_cast<Colors> (white_edge.face)) == front) {
             if (white_edge.pos == TopEdge) {
                 front_left();
                 turnTopUntil([&]() { return up->getSquare(LeftEdge) == White; });
@@ -552,7 +563,7 @@ void Cube::whiteCross() {
             }
         }
 
-        else if (color_to_side[static_cast<Colors> (white_edge.face)] == right) {
+        else if (&getSide(static_cast<Colors> (white_edge.face)) == right) {
             if (white_edge.pos == TopEdge) {
                 right_down();
                 turnTopUntil([&]() { return up->getSquare(BottomEdge) == White; });
@@ -573,7 +584,7 @@ void Cube::whiteCross() {
                 back_left();
             }
         }
-        else if (color_to_side[static_cast<Colors> (white_edge.face)] == back) {
+        else if (&getSide(static_cast<Colors> (white_edge.face)) == back) {
             if (white_edge.pos == TopEdge) {
                 back_right();
                 turnTopUntil([&]() { return up->getSquare(RightEdge) == White; });

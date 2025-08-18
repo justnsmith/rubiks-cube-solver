@@ -466,6 +466,32 @@ Cube::PieceLocation Cube::find_missing_white_edge() const {
     return {-1, Middle};
 }
 
+Cube::PieceLocation Cube::find_missing_white_corner() const {
+    const std::array<SquarePosition, 4> relevant_squares = {TopLeftCorner, TopRightCorner, BottomLeftCorner, BottomRightCorner};
+    for (int i = 0; i < NUM_OF_SIDES; i++) {
+        for (int j = 0; j < relevant_squares.size(); j++) {
+            if (getSide(static_cast<Colors> (i)).getSquare(relevant_squares[j]) == White) {
+                if (&getSide(static_cast<Colors> (i)) != &getSide(White)) {
+                    return {i, static_cast<SquarePosition> (relevant_squares[j])};
+                }
+                else if (relevant_squares[j] == TopLeftCorner && (front->getSquare(BottomLeftCorner) != front->getSquare(Middle) || left->getSquare(BottomLeftCorner) != left->getSquare(Middle))) {
+                    return {i, static_cast<SquarePosition> (relevant_squares[j])};
+                }
+                else if (relevant_squares[j] == TopRightCorner && (front->getSquare(BottomRightCorner) != front->getSquare(Middle) || right->getSquare(BottomLeftCorner) != right->getSquare(Middle))) {
+                    return {i, static_cast<SquarePosition> (relevant_squares[j])};
+                }
+                else if (relevant_squares[j] == BottomLeftCorner && (back->getSquare(BottomRightCorner) != back->getSquare(Middle) || left->getSquare(BottomLeftCorner) != left->getSquare(Middle))) {
+                    return {i, static_cast<SquarePosition> (relevant_squares[j])};
+                }
+                else if (relevant_squares[j] == BottomRightCorner && (back->getSquare(BottomLeftCorner) != back->getSquare(Middle) || right->getSquare(BottomRightCorner) != right->getSquare(BottomRightCorner))) {
+                    return {i, static_cast<SquarePosition> (relevant_squares[j])};
+                }
+            }
+        }
+    }
+    return {-1, Middle};
+}
+
 void Cube::turnTopUntil(std::function<bool()> condition) {
     while (condition()) {
         top_left();
@@ -634,4 +660,6 @@ void Cube::whiteCross() {
 
 void Cube::solve() {
     whiteCross();
+    PieceLocation test = find_missing_white_corner();
+    std::cout << sideToPosition(&getSide(static_cast<Colors> (test.face))) << " " << test.pos << std::endl;
 }

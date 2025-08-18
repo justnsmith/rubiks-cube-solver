@@ -5,7 +5,7 @@
 #define NUM_OF_SQUARES 9
 
 class Side {
-protected:
+public:
     enum Colors {
         Yellow,
         White,
@@ -29,7 +29,6 @@ protected:
 
    std::array<Colors, NUM_OF_SQUARES> squares;
 
-public:
     void printSide();
     Colors& getSquare(SquarePosition index);
 };

@@ -36,6 +36,7 @@ private:
     void changeSideColor(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides);
     void whiteCross();
     PieceLocation find_missing_white_edge() const;
+    PieceLocation find_missing_white_corner() const;
     void turnTopUntil(std::function<bool()> condition);
 
 public:

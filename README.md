@@ -2,6 +2,30 @@
 
 A C++ implementation of a 3x3 Rubik's Cube simulator and solver using the beginner's method.
 
+## Table of Contents
+
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Building](#building)
+  - [Prerequisites](#prerequisites)
+  - [Compilation](#compilation)
+  - [Running](#running)
+  - [Cleaning](#cleaning)
+- [Cube Representation](#cube-representation)
+- [Move Notation](#move-notation)
+  - [Face Moves](#face-moves)
+  - [Slice Moves](#slice-moves)
+  - [Cube Rotations](#cube-rotations)
+- [Implementation Details](#implementation-details)
+  - [Class Structure](#class-structure)
+  - [Key Features](#key-features)
+  - [Algorithm Components](#algorithm-components)
+- [Current Status](#current-status)
+- [Usage Example](#usage-example)
+- [Technical Highlights](#technical-highlights)
+- [Future Enhancements](#future-enhancements)
+- [Author](#author)
+
 ## Features
 
 - **Visual Cube Representation**: Color-coded terminal output with ASCII art borders

@@ -1,13 +1,12 @@
-#include <iostream>
 #include <Cube.h>
+
+#include <iostream>
 
 using namespace std;
 
 int main() {
-    Cube cube;
-    cube.printCube();
-    cube.scramble();
-    cube.printCube();
-    cube.solve();
-    cube.printCube();
+    Cube cube1;
+    cube1.printCube();
+    cube1.whiteCross();
+    cube1.printCube();
 }

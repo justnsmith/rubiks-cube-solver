@@ -2,23 +2,24 @@
 #define CUBE_H
 
 #include <Side.h>
+
+#include <functional>
 #include <unordered_map>
 #include <vector>
-#include <functional>
 #define NUM_OF_SIDES 6
 #define NUM_OF_BODY_SIDES 4
 #define SIDE_LENGTH 3
 
 class Cube : Side {
-private:
-    std::array<Side, NUM_OF_SIDES> sides {};
-    std::unordered_map<Colors, Side*> color_to_side {};
-    Side* up {};
-    Side* left {};
-    Side* front {};
-    Side* back {};
-    Side* right {};
-    Side* down {};
+  private:
+    std::array<Side, NUM_OF_SIDES> sides{};
+    std::unordered_map<Colors, Side *> color_to_side{};
+    Side *up{};
+    Side *left{};
+    Side *front{};
+    Side *back{};
+    Side *right{};
+    Side *down{};
 
     struct PieceLocation {
         int face{};
@@ -27,23 +28,24 @@ private:
 
     void initailizeCube();
     const std::string colorsToString(Colors color);
-    const std::string sideToPosition(Side* Side);
-    void makeTurn(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides, const std::array<SquarePosition, SIDE_LENGTH>& left_side_squares);
-    void rotateHelper(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides);
-    void rotate_side_counterclockwise(Side* side);
-    void rotate_side_clockwise(Side* side);
-    void inverse_move(Side* side, const std::array<SquarePosition, SIDE_LENGTH>& original_squares, const std::array<SquarePosition, SIDE_LENGTH>& new_squares);
-    void changeSideColor(const std::array<Side*, NUM_OF_BODY_SIDES>& relevant_sides);
-    void whiteCross();
+    const std::string sideToPosition(Side *Side);
+    void makeTurn(const std::array<Side *, NUM_OF_BODY_SIDES> &relevant_sides,
+                  const std::array<SquarePosition, SIDE_LENGTH> &left_side_squares);
+    void rotateHelper(const std::array<Side *, NUM_OF_BODY_SIDES> &relevant_sides);
+    void rotate_side_counterclockwise(Side *side);
+    void rotate_side_clockwise(Side *side);
+    void inverse_move(Side *side, const std::array<SquarePosition, SIDE_LENGTH> &original_squares,
+                      const std::array<SquarePosition, SIDE_LENGTH> &new_squares);
+    void changeSideColor(const std::array<Side *, NUM_OF_BODY_SIDES> &relevant_sides);
     PieceLocation find_missing_white_edge() const;
     PieceLocation find_missing_white_corner() const;
     void turnTopUntil(std::function<bool()> condition);
 
-public:
+  public:
     Cube();
-    friend bool operator==(const Cube& lhs, const Cube& rhs);
+    friend bool operator==(const Cube &lhs, const Cube &rhs);
 
-    Side& getSide(Colors color) const;
+    Side &getSide(Colors color) const;
     void printCube() const;
     void rotate_up();
     void rotate_down();
@@ -70,6 +72,9 @@ public:
     void scramble();
     void makeMoves();
     void solve();
+
+    void whiteCross();
+    void whiteCorners();
 };
 
 #endif

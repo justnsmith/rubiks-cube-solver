@@ -150,9 +150,8 @@ void Cube::makeTurn(const std::array<Side *, NUM_OF_BODY_SIDES> &relevant_sides,
 }
 
 void Cube::rotateHelper(const std::array<Side *, NUM_OF_BODY_SIDES> &relevant_sides) {
-    Side temp{};
     for (int i = 1; i < relevant_sides.size(); i++) {
-        temp = *relevant_sides[0];
+        Side temp = *relevant_sides[0];
         *relevant_sides[0] = *relevant_sides[i];
         *relevant_sides[i] = temp;
     }
@@ -453,7 +452,7 @@ void Cube::changeSideColor(const std::array<Side *, NUM_OF_BODY_SIDES> &relevant
     }
 }
 
-const std::string Cube::sideToPosition(Side *side) {
+const std::string Cube::sideToPosition(const Side *side) const {
     if (side == up)
         return "up";
     if (side == down)

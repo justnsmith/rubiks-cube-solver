@@ -27,15 +27,15 @@ class Cube : Side {
     };
 
     void initailizeCube();
-    const std::string colorsToString(Colors color);
-    const std::string sideToPosition(Side *Side);
-    void makeTurn(const std::array<Side *, NUM_OF_BODY_SIDES> &relevant_sides,
-                  const std::array<SquarePosition, SIDE_LENGTH> &left_side_squares);
-    void rotateHelper(const std::array<Side *, NUM_OF_BODY_SIDES> &relevant_sides);
-    void rotate_side_counterclockwise(Side *side);
-    void rotate_side_clockwise(Side *side);
-    void inverse_move(Side *side, const std::array<SquarePosition, SIDE_LENGTH> &original_squares,
-                      const std::array<SquarePosition, SIDE_LENGTH> &new_squares);
+    static const std::string colorsToString(Colors color);
+    const std::string sideToPosition(const Side *Side) const;
+    static void makeTurn(const std::array<Side *, NUM_OF_BODY_SIDES> &relevant_sides,
+                         const std::array<SquarePosition, SIDE_LENGTH> &left_side_squares);
+    static void rotateHelper(const std::array<Side *, NUM_OF_BODY_SIDES> &relevant_sides);
+    static void rotate_side_counterclockwise(Side *side);
+    static void rotate_side_clockwise(Side *side);
+    static void inverse_move(Side *side, const std::array<SquarePosition, SIDE_LENGTH> &original_squares,
+                             const std::array<SquarePosition, SIDE_LENGTH> &new_squares);
     void changeSideColor(const std::array<Side *, NUM_OF_BODY_SIDES> &relevant_sides);
     PieceLocation find_missing_white_edge() const;
     PieceLocation find_missing_white_corner() const;

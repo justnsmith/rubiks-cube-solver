@@ -2,6 +2,17 @@
 CXX := g++
 CXXFLAGS := -std=c++17 -Wall -Iinclude
 
+# Tools
+CPPCHECK := cppcheck
+CPPCHECK_FLAGS := \
+	--enable=all \
+	--inconclusive \
+	--std=c++17 \
+	--verbose \
+	--error-exitcode=1 \
+	--suppress=missingIncludeSystem \
+	-I include
+
 # Directories
 SRC_DIR := src
 INC_DIR := include
@@ -30,9 +41,13 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp $(INC_DIR)/*.h
 run: all
 	./$(TARGET)
 
+# Run static analysis
+check:
+	$(CPPCHECK) $(CPPCHECK_FLAGS) $(SRC_DIR) $(INC_DIR)
+
 # Clean build artifacts
 clean:
 	rm -rf $(BUILD_DIR)/*.o $(TARGET)
 
 # Phony targets
-.PHONY: all clean run
+.PHONY: all clean run check

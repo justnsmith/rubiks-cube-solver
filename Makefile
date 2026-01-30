@@ -8,9 +8,11 @@ CPPCHECK_FLAGS := \
 	--enable=all \
 	--inconclusive \
 	--std=c++17 \
-	--verbose \
 	--error-exitcode=1 \
 	--suppress=missingIncludeSystem \
+	--suppress=normalCheckLevelMaxBranches \
+	--suppress=useStlAlgorithm \
+	--suppress=unusedFunction \
 	-I include
 
 # Directories

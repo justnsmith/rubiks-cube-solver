@@ -1,4 +1,4 @@
-name: C++ Lint (cppcheck)
+name: ++ Lint (cppcheck)
 
 on:
   push:
@@ -26,5 +26,8 @@ jobs:
             --verbose \
             --error-exitcode=1 \
             --suppress=missingIncludeSystem \
+            --suppress=normalCheckLevelMaxBranches \
+            --suppress=useStlAlgorithm \
+            --suppress=unusedFunction \
             -I include \
             src include

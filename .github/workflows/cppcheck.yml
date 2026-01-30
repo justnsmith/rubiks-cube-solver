@@ -14,20 +14,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install cppcheck
-        run: sudo apt-get update && sudo apt-get install -y cppcheck
-
-      - name: Run cppcheck
+      - name: Build cppcheck 2.19
         run: |
-          cppcheck \
-            --enable=all \
-            --inconclusive \
-            --std=c++17 \
-            --verbose \
-            --error-exitcode=1 \
-            --suppress=missingIncludeSystem \
-            --suppress=normalCheckLevelMaxBranches \
-            --suppress=useStlAlgorithm \
-            --suppress=unusedFunction \
-            -I include \
-            src include
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake g++ wget
+
+          # get the source
+          wget https://sourceforge.net/projects/cppcheck/files/cppcheck/2.19/cppcheck-2.19.0.tar.gz
+          tar xzf cppcheck-2.19.0.tar.gz
+          cd cppcheck-2.19.0
+
+          # build
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          make -j$(nproc)
+
+          # install to PATH
+          sudo cp cppcheck /usr/bin/cppcheck
+
+          # verify
+          cppcheck --version
+
+      - name: Run cppcheck via Makefile
+        run: make check

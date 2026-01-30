@@ -101,6 +101,7 @@ Cube::Side &Cube::getSide(Colors color) const {
     return *(color_to_side.at(color));
 }
 
+// cppcheck-suppress unusedFunction
 const std::string Cube::colorsToString(Colors color) {
     switch (color) {
     case Colors::Yellow:
@@ -136,15 +137,15 @@ void Cube::inverse_move(Side *side, const std::array<SquarePosition, SIDE_LENGTH
 }
 
 void Cube::makeTurn(const std::array<Side *, NUM_OF_BODY_SIDES> &relevant_sides,
-                    const std::array<SquarePosition, SIDE_LENGTH> &square_positions) {
+                    const std::array<SquarePosition, SIDE_LENGTH> &left_side_squares) {
     Colors temp{};
 
     for (int i = 1; i < relevant_sides.size(); i++) {
         Side &currentSide = *relevant_sides[i];
-        for (int j = 0; j < square_positions.size(); j++) {
-            temp = relevant_sides[0]->getSquare(square_positions[j]);
-            relevant_sides[0]->getSquare(square_positions[j]) = currentSide.getSquare(square_positions[j]);
-            currentSide.getSquare(square_positions[j]) = temp;
+        for (int j = 0; j < left_side_squares.size(); j++) {
+            temp = relevant_sides[0]->getSquare(left_side_squares[j]);
+            relevant_sides[0]->getSquare(left_side_squares[j]) = currentSide.getSquare(left_side_squares[j]);
+            currentSide.getSquare(left_side_squares[j]) = temp;
         }
     }
 }
@@ -372,6 +373,7 @@ void Cube::back_left() {
     rotate_left();
 }
 
+// cppcheck-suppress unusedFunction
 void Cube::scramble() {
     srand(static_cast<unsigned int>(time(0)));
     for (int i = 0; i < 25; i++) {
@@ -452,6 +454,7 @@ void Cube::changeSideColor(const std::array<Side *, NUM_OF_BODY_SIDES> &relevant
     }
 }
 
+// cppcheck-suppress unusedFunction
 const std::string Cube::sideToPosition(const Side *side) const {
     if (side == up)
         return "up";

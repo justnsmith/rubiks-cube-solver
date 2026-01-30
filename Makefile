@@ -5,15 +5,16 @@ CXXFLAGS := -std=c++17 -Wall -Iinclude
 # Tools
 CPPCHECK := cppcheck
 CPPCHECK_FLAGS := \
-	--enable=all \
-	--inconclusive \
-	--std=c++17 \
-	--error-exitcode=1 \
-	--suppress=missingIncludeSystem \
-	--suppress=normalCheckLevelMaxBranches \
-	--suppress=useStlAlgorithm \
-	--suppress=unusedFunction \
-	-I include
+    --enable=all \
+    --inconclusive \
+    --std=c++17 \
+    --error-exitcode=1 \
+    --suppress=missingIncludeSystem \
+    --suppress=unusedFunction \
+    --suppress=useStlAlgorithm \
+    --suppress=normalCheckLevelMaxBranches \
+    --suppress=checkersReport \
+    -I include
 
 # Directories
 SRC_DIR := src

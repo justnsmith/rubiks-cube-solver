@@ -28,7 +28,7 @@ class Cube : Side {
 
     void initailizeCube();
     static const std::string colorsToString(Colors color);
-    const std::string sideToPosition(const Side *Side) const;
+    const std::string sideToPosition(const Side *side) const;
     static void makeTurn(const std::array<Side *, NUM_OF_BODY_SIDES> &relevant_sides,
                          const std::array<SquarePosition, SIDE_LENGTH> &left_side_squares);
     static void rotateHelper(const std::array<Side *, NUM_OF_BODY_SIDES> &relevant_sides);

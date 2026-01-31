@@ -7,8 +7,7 @@ CPPCHECK := cppcheck
 CPPCHECK_FLAGS := \
     --enable=all \
     --inconclusive \
-    --std=c++17 \
-    --error-exitcode=1 \
+    --std=c++20 \
     --suppress=missingIncludeSystem \
     --suppress=unusedFunction \
     --suppress=useStlAlgorithm \

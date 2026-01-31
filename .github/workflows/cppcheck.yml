@@ -1,4 +1,4 @@
-name: ++ Lint (cppcheck)
+name: Lint (cppcheck)
 
 on:
   push:
@@ -7,34 +7,14 @@ on:
     branches: [ main ]
 
 jobs:
-  cppcheck:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Build cppcheck 2.19
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential cmake g++ wget
+      - name: Install cppcheck
+        run: sudo apt-get update && sudo apt-get install -y cppcheck
 
-          # get the source
-          wget https://sourceforge.net/projects/cppcheck/files/cppcheck/2.19/cppcheck-2.19.0.tar.gz
-          tar xzf cppcheck-2.19.0.tar.gz
-          cd cppcheck-2.19.0
-
-          # build
-          mkdir build
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release
-          make -j$(nproc)
-
-          # install to PATH
-          sudo cp cppcheck /usr/bin/cppcheck
-
-          # verify
-          cppcheck --version
-
-      - name: Run cppcheck via Makefile
+      - name: Run make check
         run: make check
